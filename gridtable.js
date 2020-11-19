@@ -1,6 +1,11 @@
 "use strict";
 const log = console.log
 
+//TODO: Check for incorrect inputs
+//TODO: Add data filtering
+//TODO: Add color coding
+//TODO: Add information storage (td:hover)
+//TODO: Add import/export object
 
 function GridTable() {
     
@@ -19,6 +24,7 @@ function GridTable() {
             this.col = numCols
             const GridTable = document.createElement('table')
             GridTable.id = 'GridTable'
+            GridTable.style = ''
             const insert = document.getElementById(selector)
 
             //Generate the Rows
@@ -36,7 +42,7 @@ function GridTable() {
             for (let col = 0; col < numCols; col++) {
 
                 const tableHead = document.createElement('th')
-                tableHead.id = 'GridTableHead' + (col + 1)
+                tableHead.id = 'GridTableDataRow-' + 1 + '-Col-' + (col+1)
                 const text = document.createTextNode(col+1)
                 tableHead.appendChild(text)
                 firstRow.appendChild(tableHead)
@@ -71,17 +77,8 @@ function GridTable() {
                 Error("Please create a table before inserting data")
             }
 
-            if (rowNum === 1) {
-
-                const row = document.getElementById("GridTableHead"+colNum)
-                row.innerText = data
-
-            } else {
-
-                const cell = document.getElementById("GridTableDataRow-"+rowNum+'-Col-'+colNum)
-                cell.innerText = data
-
-            }
+            const cell = document.getElementById("GridTableDataRow-"+rowNum+'-Col-'+colNum)
+            cell.innerText = data
 
         },
 
@@ -97,16 +94,25 @@ function GridTable() {
                 Error("Create Table First or Size List != Number of Columns")
             }
 
-            if (rowNum === 1) {
-                this.updateHeader(updatedList)
-            } else {
+            for (let col = 0; col < this.col; col++) {
 
-                for (let col = 0; col < this.col; col++) {
+                const cell = document.getElementById("GridTableDataRow-"+rowNum+'-Col-'+(col+1))
+                cell.innerText = updatedList[col]
 
-                    const cell = document.getElementById("GridTableDataRow-"+rowNum+'-Col-'+(col+1))
-                    cell.innerText = updatedList[col]
+            }
 
-                }
+        },
+
+        updateCol: function(colNum, updatedList) {
+
+            if (this.checkInitialization() || colNum > this.col || colNum < 1 || updatedList.length > this.rowData.length) {
+                Error(("Create Table First or Size List != Number of Rows or colNum > Number of Columcs or colNum < 1"))
+            }
+
+            for (let row = 1; row < this.row; row++) {
+
+                const cell = document.getElementById("GridTableDataRow-"+(row+1)+'-Col-'+colNum)
+                cell.innerText = updatedList[row-1]
 
             }
 
@@ -119,13 +125,7 @@ function GridTable() {
                 Error("Create Table First or Size of Headers List != Number of Columns")
             }
 
-
-            for (let col = 0; col < this.col; col++) {
-
-                const cell = document.getElementById("GridTableHead"+(col + 1))
-                cell.innerText = listOfNewHeaders[col]
-
-            }
+            this.updateRow(1, listOfNewHeaders)
 
         },
 
@@ -153,6 +153,30 @@ function GridTable() {
             }
 
             this.row -= 1
+
+        },
+
+        deleteCol: function(colNum) {
+
+            if (this.checkInitialization() || colNum > this.col || colNum < 1) {
+                Error("Create Table First or colNum > Number of Cols or colNum < 1")
+            }
+            
+            for (let row = 0; row < this.row; row++) {
+
+                const cellToDelete = document.getElementById("GridTableDataRow-"+(row+1)+'-Col-'+colNum)
+                cellToDelete.parentNode.removeChild(cellToDelete)
+
+                for (let col = colNum; col < this.col; col++) {
+
+                    const cellUpdate = document.getElementById("GridTableDataRow-"+(row+1)+'-Col-'+(col+1))
+                    cellUpdate.id = "GridTableDataRow-"+(row+1)+'-Col-'+(col)
+
+                }
+
+            }
+
+            this.col -= 1
 
         }
 
