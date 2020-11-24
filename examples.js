@@ -1,5 +1,5 @@
 const grid = new GridTable()
-grid.makeGridTable(6, 3, 'root')
+grid.makeGridTable(6, 3, 'root', '1')
 grid.insertData(1, 1, 'Item ID')
 grid.insertData(2, 1, 666)
 grid.insertData(3, 1, 333)
@@ -9,9 +9,13 @@ grid.updateRow(3, ['Yu-Gi-Oh', '460', '85.79'])
 grid.updateRow(4, ['Airpods', '400', '3.49'])
 grid.updateRow(5, ['Dungeons N Dragons', '920', '12.29'])
 grid.updateRow(6, ['Beyblade', '129', '5.99'])
-grid.filterData(1, 'desc')
+grid.sortData(1, 'desc')
 grid.addRow(['Pokemon', 700, 26.99])
 grid.addCol(['Item ID', 001, 002, 003, 004, 005, 006])
-grid.filterData(4,'desc')
+grid.sortData(4,'desc')
+
+
+const grid2 = new GridTable()
+grid2.makeGridTable(5, 2, 'root', '2')
 // console.log(grid.cellData)
 // 'Yu-Gi-Oh', '460', '85.79'

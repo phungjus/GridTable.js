@@ -1,7 +1,12 @@
 "use strict";
 const log = console.log
 
-//TODO: Check for incorrect inputs
+//CURRENT TASKS:
+//TODO: Add Search Feature it looks for a value in the table???
+//TODO: Add Filtering Feature it filters according to specifications???
+//TODO: Join Two Tables???
+
+//HOLD OFF FOR NOW:
 //TODO: Add color coding
 //TODO: Add information storage (td:hover)
 //TODO: Add import/export object
@@ -12,18 +17,19 @@ function GridTable() {
     this.col = 0
     this.rowData = []
     this.cellData = []
+    this.uniqueID = undefined
 
 }
 
     GridTable.prototype = {
 
-        makeGridTable: function(numRows, numCols, selector) {
+        makeGridTable: function(numRows, numCols, selector, uniqueID) {
 
+            this.uniqueID = uniqueID
             this.row = numRows
             this.col = numCols
             const GridTable = document.createElement('table')
-            GridTable.id = 'GridTable'
-            GridTable.style = ''
+            GridTable.id = 'GridTable' + uniqueID
             const insert = document.getElementById(selector)
 
             //Generate the Rows
@@ -194,7 +200,7 @@ function GridTable() {
 
         },
 
-        filterData: function(colNum, direction) {
+        sortData: function(colNum, direction) {
 
             const colValues = this.cellData.filter(cell => cell.col === colNum && cell.row !== 1)
             const newFilteredArray = []
@@ -276,7 +282,7 @@ function GridTable() {
                 Error("Values provided don't match up with number of columns")
             }
 
-            const GridTable = document.getElementById("GridTable")
+            const GridTable = document.getElementById("GridTable" + this.uniqueID)
             const tableRow = document.createElement('tr')
             tableRow.id = 'GridTableRow' + (this.row + 1)
 
