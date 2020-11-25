@@ -504,7 +504,21 @@ function GridTable() {
             * name and details. It will then update the event at the specified row and column.
             */
 
+           const cell = document.getElementById("GridTable"+this.uniqueID+"DataRow-"+cellRow+'-Col-'+cellCol)
+           cell.innerHTML = ''
+        
+           const tooltipDiv = document.createElement('div')
+           tooltipDiv.className = 'tooltip'
+           tooltipDiv.innerText = updatedEventObj.name
+           tooltipDiv.id = 'tooltipDiv'+updatedEventObj.name+'Row'+cellRow+'Col'+cellCol
 
+           const tooltipText = document.createElement('span')
+           tooltipText.className = 'tooltiptext'
+           tooltipText.innerText = updatedEventObj.details
+
+           tooltipDiv.appendChild(tooltipText)
+
+           cell.appendChild(tooltipDiv)
 
         },
 

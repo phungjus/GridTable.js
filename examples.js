@@ -27,5 +27,6 @@ weeklyCalendar.addEvent({name: 'CSC309 Lecture', details: 'Intro to Web Programm
 weeklyCalendar.addEvent({name: 'CSC324 Lecture', details: 'Functional Programming'}, 6, 6)
 weeklyCalendar.addEvent({name: 'CSC309 Tutorial', details: 'Intro to Web Programming'}, 11, 6)
 weeklyCalendar.deleteEvent(6, 2)
+weeklyCalendar.modifyEvent({name: 'Untangle Money Meeting', details: 'Zoom Call'} ,13, 2)
 // console.log(grid.cellData)
 // 'Yu-Gi-Oh', '460', '85.79'
