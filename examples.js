@@ -1,3 +1,4 @@
+
 const grid = new GridTable()
 grid.makeGridTable(6, 3, 'root', '1')
 grid.insertData(1, 1, 'Item ID')
@@ -28,5 +29,10 @@ weeklyCalendar.addEvent({name: 'CSC324 Lecture', details: 'Functional Programmin
 weeklyCalendar.addEvent({name: 'CSC309 Tutorial', details: 'Intro to Web Programming'}, 11, 6)
 weeklyCalendar.deleteEvent(6, 2)
 weeklyCalendar.modifyEvent({name: 'Untangle Money Meeting', details: 'Zoom Call'} ,13, 2)
-// console.log(grid.cellData)
-// 'Yu-Gi-Oh', '460', '85.79'
+
+const exportedGridTable = weeklyCalendar.exportGridTable()
+
+console.log(exportedGridTable)
+
+const calendar = new GridTable()
+calendar.importGridTable(exportedGridTable)

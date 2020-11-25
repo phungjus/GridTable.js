@@ -7,6 +7,7 @@ const log = console.log
 //HOLD OFF FOR NOW:
 //TODO: Add color coding
 //TODO: Add import/export object
+//TODO: Differentiate between Grid and Table
 
 function GridTable() {
     
@@ -15,28 +16,35 @@ function GridTable() {
     this.rowData = []
     this.cellData = []
     this.uniqueID = undefined
+    this.selector = undefined
+    this.gridOrTable = undefined
 
 }
 
     GridTable.prototype = {
 
-        makeGridTable: function(numRows, numCols, selector, uniqueID) {
+        makeGridTable: function(numRows, numCols, selector, uniqueID, gridOrTable) {
 
             /**
             * @param {Number} numRows
             * @param {Number} numCols
             * @param {String} selector
             * @param {String} uniqueID 
+            * @param {String} gridOrTable
             * 
             * Description:
-            * This function takes in 4 parameters: numRows, numCols, selector, and uniqueID.
-            * It then creates an HTML table with 'numRows' rows and 'numCols' columns and 
-            * id: 'GridTable' + uniqueID, then adds that table to the HTML element with id: 'selector' 
+            * This function takes in 4 parameters: numRows, numCols, selector, uniqueID, and 
+            * gridOrTable. It then creates an HTML table with 'numRows' rows and 'numCols' columns and 
+            * id: 'GridTable' + uniqueID, then adds that table to the HTML element with id: 'selector'.
+            * Then depending on whether a grid or table was selected different functions can be used 
             */
 
+            this.selector = selector
             this.uniqueID = uniqueID
             this.row = numRows
             this.col = numCols
+            this.gridOrTable = gridOrTable
+
             const GridTable = document.createElement('table')
             GridTable.id = 'GridTable' + uniqueID
             const insert = document.getElementById(selector)
@@ -295,6 +303,11 @@ function GridTable() {
             * 'desc' for descending order.
             */
 
+            if (this.gridOrTable === 'grid') {
+                log('This function can only be used on Tables not Grids')
+                return
+            }
+
             const colValues = this.cellData.filter(cell => cell.col === colNum && cell.row !== 1)
             const newFilteredArray = []
 
@@ -461,6 +474,11 @@ function GridTable() {
             * This function takes in three parameters eventObj, cellRow, and cellCol. This function can only be called
             * with the Grid form of GridTable object, it adds the eventObj to the specified cellRow and cellCol.
             */
+            
+            if (this.gridOrTable === 'table') {
+                log('This function can only be used on Grids not Tables')
+                return
+            }
 
             const cell = document.getElementById("GridTable"+this.uniqueID+"DataRow-"+cellRow+'-Col-'+cellCol)
 
@@ -476,6 +494,8 @@ function GridTable() {
             tooltipDiv.appendChild(tooltipText)
 
             cell.appendChild(tooltipDiv)
+
+            this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data = cell.innerHTML
         },
 
         deleteEvent: function(cellRow, cellCol) {
@@ -489,8 +509,16 @@ function GridTable() {
             * the event located at that position.
             */
 
+            if (this.gridOrTable === 'table') {
+                log('This function can only be used on Grids not Tables')
+                return
+            }
+
             const cell = document.getElementById("GridTable"+this.uniqueID+"DataRow-"+cellRow+'-Col-'+cellCol)
             cell.innerHTML = ''
+
+            this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data = cell.innerHTML
+
 
         },
 
@@ -504,29 +532,103 @@ function GridTable() {
             * name and details. It will then update the event at the specified row and column.
             */
 
-           const cell = document.getElementById("GridTable"+this.uniqueID+"DataRow-"+cellRow+'-Col-'+cellCol)
-           cell.innerHTML = ''
+            if (this.gridOrTable === 'table') {
+                log('This function can only be used on Grids not Tables')
+                return
+            }
+
+            const cell = document.getElementById("GridTable"+this.uniqueID+"DataRow-"+cellRow+'-Col-'+cellCol)
+            cell.innerHTML = ''
         
-           const tooltipDiv = document.createElement('div')
-           tooltipDiv.className = 'tooltip'
-           tooltipDiv.innerText = updatedEventObj.name
-           tooltipDiv.id = 'tooltipDiv'+updatedEventObj.name+'Row'+cellRow+'Col'+cellCol
+            const tooltipDiv = document.createElement('div')
+            tooltipDiv.className = 'tooltip'
+            tooltipDiv.innerText = updatedEventObj.name
+            tooltipDiv.id = 'tooltipDiv'+updatedEventObj.name+'Row'+cellRow+'Col'+cellCol
 
-           const tooltipText = document.createElement('span')
-           tooltipText.className = 'tooltiptext'
-           tooltipText.innerText = updatedEventObj.details
+            const tooltipText = document.createElement('span')
+            tooltipText.className = 'tooltiptext'
+            tooltipText.innerText = updatedEventObj.details
 
-           tooltipDiv.appendChild(tooltipText)
+            tooltipDiv.appendChild(tooltipText)
 
-           cell.appendChild(tooltipDiv)
+            cell.appendChild(tooltipDiv)
+
+            this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data = cell.innerHTML
+
 
         },
 
         exportGridTable: function() {
 
+            /**
+            * @return {Object} 
+            * 
+            * Description:
+            * This function takes no inputs, it will return a Object which represents the 
+            * GridTableJS object.
+            */
+
+            const GridTableJsObj = {numRows: this.row, numCols: this.col, uniqueID: this.uniqueID, selector: this.selector, cellData: this.cellData}
+            
+            return GridTableJsObj
+
         },
 
-        importGridTable: function() {
+        importGridTable: function(GridTableObject) {
+
+            /**
+            * @param {Object} GridTableObject 
+            * 
+            * Description:
+            * This function takes in an object called GridTableObject, it is an object which has been
+            * exported by the GridTableJS library to specifically re-create the previously saved
+            * GridTable.
+            */
+
+            this.row = GridTableObject.numRows
+            this.col = GridTableObject.numCols
+            this.uniqueID = GridTableObject.uniqueID
+            this.cellData = GridTableObject.cellData
+            this.selector = GridTableObject.selector
+
+            const GridTable = document.createElement('table')
+            GridTable.id = "GridTable" + this.uniqueID
+
+            for (let rowCounter = 0; rowCounter < this.row; rowCounter++) {
+
+                const rowData = this.cellData.filter(cell => cell.row === rowCounter + 1)
+                const rowHTML = document.createElement('tr')
+                rowHTML.id = "GridTable" + this.uniqueID + 'Row' + (rowCounter+1)
+
+                for (let colCounter = 0; colCounter < rowData.length; colCounter++) {
+
+                    if (rowCounter === 0) {
+
+                        const tableHeadHTML = document.createElement('th')
+                        tableHeadHTML.id = 'GridTable' + this.uniqueID + 'DataRow-' + (rowCounter + 1) + '-Col-' + (colCounter+1)
+                        tableHeadHTML.innerHTML = rowData[colCounter].data
+
+                        rowHTML.appendChild(tableHeadHTML)
+
+                    } else {
+
+                        const tableDataHTML = document.createElement('td')
+                        tableDataHTML.id = 'GridTable' + this.uniqueID + 'DataRow-' + (rowCounter + 1) + '-Col-' + (colCounter+1)
+                        tableDataHTML.innerHTML = rowData[colCounter].data
+
+                        rowHTML.appendChild(tableDataHTML)
+
+                    }
+
+                }
+
+                GridTable.appendChild(rowHTML)
+
+            }
+
+            const insert = document.getElementById(this.selector)
+
+            insert.appendChild(GridTable)
 
         }
 
