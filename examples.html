@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Warehouse</title>
+    <title>Warehouse Dashboard</title>
 
     <script defer type="text/javascript" src='gridtable.js'></script>
 
@@ -12,8 +12,49 @@
 
     <link href="stylesheet.css" rel="stylesheet" type="text/css">
 
+    <link href="examples.css" rel="stylesheet" type="text/css">
 </head>
 <body>
-    <div id="root"></div>
+    <div id="root">
+        <h1>Warehouse Dashboard</h1>
+        <h2>Current Inventory Status:</h2>
+        <h3>Add Item:</h3>
+        <form id='inventoryAdd'>
+            <input id='itemID' type='text' name='itemID' placeholder="Item ID">
+            <input id='itemName' type="text" name="itemName" placeholder="Item Name">
+            <input id="itemQuantity" type="text" name="itemQuantity" placeholder="Item Quantity">
+            <input id="itemPrice" type="text" name="itemPrice" placeholder="Item Price">
+            <input type="submit" value="Add Item">
+        </form>
+        <h3>Delete Item:</h3>
+        <form id="inventoryDelete">
+            <input type='text' id="deleteItemID" name="deleteItemID" placeholder="Item ID">
+            <input type="submit" value="Delete Item">
+        </form>
+
+        <h3>Modify Item Field:</h3>
+        <form id="inventoryModify">
+            <input type="text" id="modifyItemID" name="modifyItemID" placeholder="Item ID">
+            <input type="text" id="modifyItemProperty" name="modifyItemProperty" placeholder="Property of Item">
+            <input type="text" id="modifyItemNewValue" name="modifyItemNewValue" placeholder="New Value">
+            <input type="submit" value="Update Item">
+        </form>
+
+        <div id="warehouseInventoryTable">
+            <!-- Insert Warehouse Inventory here with some dummy data -->
+        </div>
+        <h2>Warehouse Delivery Schedule:</h2>
+        <h3>Add Shipment to Schedule:</h3>
+        <form id='scheduleAdd'>
+            <input type="text" id="eventName" name="eventName" placeholder="Enter Shipment Name">
+            <input type="text" id="eventDetails" name="eventDetails" placeholder="Details of Shipment">
+            <input type="text" id="eventDate" name="eventDate" placeholder="Day of Shipment">
+            <input type="text" id="eventTime" name="eventTime" placeholder="Enter Time Slot of Shipment">
+            <input type="submit" value="Add Shippment">
+        </form>
+        <div id='warehouseDeliverySchedule'>
+            <!-- Insert Warehouse Delivery Schedule here with some dummy shipments -->
+        </div>
+    </div>
 </body>
 </html>

@@ -1,3 +1,8 @@
+/*  The CSS code here was used directly from w3schools.com the specific links are:
+    https://www.w3schools.com/css/css_tooltip.asp
+    https://www.w3schools.com/css/css_table.asp
+*/
+
 .tooltip {
     position: relative;
     display: inline-block;

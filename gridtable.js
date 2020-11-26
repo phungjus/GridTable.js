@@ -127,6 +127,39 @@ function GridTable() {
 
         },
 
+        rowFinder: function(colNum, cellData) {
+
+            /**
+            * @param {Number} colNum
+            * @param {String} cellData
+            * 
+            * @return {Number}
+            * 
+            * Description:
+            * This function returns the row the cellData is located in based on the column number
+            * input: colNum
+            */
+
+            return parseInt(this.cellData.filter(cell => cell.col === colNum && cell.data === cellData)[0].row)
+
+        },
+
+        colFinder: function(colHeader) {
+
+            /**
+            * @param {String} colHeader
+            * 
+            * @return {Number}
+            * 
+            * Description:
+            * This function returns the column number given the name of the column header provided
+            * by the input colHeader
+            */
+
+            return parseInt(this.cellData.filter(cell => cell.row === 1 && cell.data.toLowerCase() === colHeader.toLowerCase())[0].col)
+
+        },
+
         updateRow: function(rowNum, updatedList) {
 
             /**

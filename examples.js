@@ -1,38 +1,159 @@
+const warehouseInventory = new GridTable()
+const warehouseDeliverySchedule = new GridTable()
 
-const grid = new GridTable()
-grid.makeGridTable(6, 3, 'root', '1')
-grid.insertData(1, 1, 'Item ID')
-grid.insertData(2, 1, 666)
-grid.insertData(3, 1, 333)
-grid.updateHeader(['Item Name', 'Item Quantity', 'Item Price'])
-grid.updateRow(2, ['Digimon', '500', '49.99'])
-grid.updateRow(3, ['Yu-Gi-Oh', '460', '85.79'])
-grid.updateRow(4, ['Airpods', '400', '3.49'])
-grid.updateRow(5, ['Dungeons N Dragons', '920', '12.29'])
-grid.updateRow(6, ['Beyblade', '129', '5.99'])
-grid.sortData(1, 'desc')
-grid.addRow(['Pokemon', 700, 26.99])
-grid.addCol(['Item ID', 001, 002, 003, 004, 005, 006])
-grid.sortData(4,'asc')
+warehouseInventory.makeGridTable(5, 4, 'warehouseInventoryTable', 'warehouseInventoryTable', 'table')
+warehouseInventory.updateHeader(['Item ID', 'Item Name', 'Item Quantity', 'Item Price ($)'])
+warehouseInventory.updateRow(2, ['001', 'PS5 Digital Edition Console', '699', '499.99'])
+warehouseInventory.updateRow(3, ['002', 'PS5 Console', '378', '629.99'])
+warehouseInventory.updateRow(4, ['003', 'Xbox Series X', '981', '599.99'])
+warehouseInventory.updateRow(5, ['004', 'Xbox Series S', '467', '379.99'])
 
-const weeklyCalendar = new GridTable()
-weeklyCalendar.makeGridTable(16, 8, 'root', 'calendar')
-weeklyCalendar.updateHeader(['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'])
-weeklyCalendar.updateCol(1, ['7:00AM', '8:00AM', '9:00AM', '10:00AM', '11:00AM', '12:00PM', '1:00PM', '2:00PM', '3:00PM', '4:00PM', '5:00PM', '6:00PM', '7:00PM', '8:00PM', '9:00PM'])
-weeklyCalendar.addEvent({name: 'CSC301 Lecture', details: 'Introduction to Software Engineering'}, 13, 2)
-weeklyCalendar.addEvent({name: 'CSC301 Tutorial', details: 'Introduction to Software Engineering'}, 15, 2)
-weeklyCalendar.addEvent({name: 'CSC324 Tutorial', details: 'Functional Programming'}, 6, 2)
-weeklyCalendar.addEvent({name: 'CSC309 Lecture', details: 'Intro to Web Programming'}, 11, 2)
-weeklyCalendar.addEvent({name: 'CSC324 Lecture', details: 'Functional Programming'}, 6, 4)
-weeklyCalendar.addEvent({name: 'CSC309 Lecture', details: 'Intro to Web Programming'}, 11, 4)
-weeklyCalendar.addEvent({name: 'CSC324 Lecture', details: 'Functional Programming'}, 6, 6)
-weeklyCalendar.addEvent({name: 'CSC309 Tutorial', details: 'Intro to Web Programming'}, 11, 6)
-weeklyCalendar.deleteEvent(6, 2)
-weeklyCalendar.modifyEvent({name: 'Untangle Money Meeting', details: 'Zoom Call'} ,13, 2)
+warehouseDeliverySchedule.makeGridTable(10, 6, 'warehouseDeliverySchedule', 'warehouseDeliveryScheduleGrid', 'grid')
+warehouseDeliverySchedule.updateHeader(['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
+warehouseDeliverySchedule.updateCol(1, ['9:00AM', '10:00AM', '11:00AM', '12:00PM', '1:00PM', '2:00PM', '3:00PM', '4:00PM', '5:00PM'])
+warehouseDeliverySchedule.addEvent({name: 'Sony Delivery', details: '550 units of PS5 consoles being shipped from Sony'}, 3, 2)
 
-const exportedGridTable = weeklyCalendar.exportGridTable()
+let ascCol1 = false
+let ascCol2 = false
+let ascCol3 = false
+let ascCol4 = false
 
-console.log(exportedGridTable)
+const inventoryAdd = document.querySelector('#inventoryAdd')
+inventoryAdd.addEventListener('submit', addNewItemToInventory)
 
-const calendar = new GridTable()
-calendar.importGridTable(exportedGridTable)
+const inventoryDelete = document.querySelector('#inventoryDelete')
+inventoryDelete.addEventListener('submit', deleteItemInventory)
+
+const inventoryModify = document.querySelector("#inventoryModify")
+inventoryModify.addEventListener('submit', modifyItemInventory)
+
+const sortCol1 = document.querySelector('#GridTablewarehouseInventoryTableDataRow-1-Col-1')
+sortCol1.addEventListener('click', sortColumn)
+
+const sortCol2 = document.querySelector('#GridTablewarehouseInventoryTableDataRow-1-Col-2')
+sortCol2.addEventListener('click', sortColumn)
+
+const sortCol3 = document.querySelector('#GridTablewarehouseInventoryTableDataRow-1-Col-3')
+sortCol3.addEventListener('click', sortColumn)
+
+const sortCol4 = document.querySelector('#GridTablewarehouseInventoryTableDataRow-1-Col-4')
+sortCol4.addEventListener('click', sortColumn)
+
+const scheduleAdd = document.querySelector('#scheduleAdd')
+scheduleAdd.addEventListener('submit', addNewShipment)
+
+function addNewItemToInventory(e) {
+    
+    e.preventDefault()
+
+    const itemID = document.querySelector('#itemID').value
+    const itemName = document.querySelector('#itemName').value
+    const itemQuantity = document.querySelector('#itemQuantity').value
+    const itemPrice = document.querySelector('#itemPrice').value
+
+    warehouseInventory.addRow([itemID, itemName, itemQuantity, itemPrice])
+
+    document.querySelector('#itemID').value = ''
+    document.querySelector('#itemName').value = ''
+    document.querySelector('#itemQuantity').value = ''
+    document.querySelector('#itemPrice').value = ''
+
+}
+
+function deleteItemInventory(e) {
+
+    e.preventDefault()
+
+    const itemID = document.querySelector("#deleteItemID").value
+
+    warehouseInventory.deleteRow(warehouseInventory.rowFinder(1, itemID))
+
+    document.querySelector("#deleteItemID").value = ''
+
+}
+
+function modifyItemInventory(e) {
+
+    e.preventDefault()
+
+    const itemID = document.querySelector('#modifyItemID').value
+    const itemProperty = document.querySelector("#modifyItemProperty").value
+    const itemNewValue = document.querySelector("#modifyItemNewValue").value
+
+    const colNum = warehouseInventory.colFinder(itemProperty)
+
+    const rowNum = warehouseInventory.rowFinder(1, itemID)
+
+    warehouseInventory.insertData(rowNum, colNum, itemNewValue)
+
+    document.querySelector('#modifyItemID').value = ''
+    document.querySelector("#modifyItemProperty").value = ''
+    document.querySelector("#modifyItemNewValue").value = ''
+
+}
+
+function sortColumn(e) {
+
+    const id = e.target.id
+    const idLength = id.length
+    const colNumber = parseInt(id[idLength-1])
+
+    if (colNumber === 1) {
+        if (ascCol1) {
+            warehouseInventory.sortData(colNumber, 'asc')
+            ascCol1 = !ascCol1
+        } else {
+            warehouseInventory.sortData(colNumber, 'desc')
+            ascCol1 = !ascCol1
+        }
+    } else if (colNumber === 2) {
+        if (ascCol2) {
+            warehouseInventory.sortData(colNumber, 'asc')
+            ascCol2 = !ascCol2
+        } else {
+            warehouseInventory.sortData(colNumber, 'desc')
+            ascCol2 = !ascCol2
+        }
+    } else if (colNumber === 3) {
+        if (ascCol3) {
+            warehouseInventory.sortData(colNumber, 'asc')
+            ascCol3 = !ascCol3
+        } else {
+            warehouseInventory.sortData(colNumber, 'desc')
+            ascCol3 = !ascCol3
+        }
+    } else if (colNumber === 4) {
+        if (ascCol4) {
+            warehouseInventory.sortData(colNumber, 'asc')
+            ascCol4 = !ascCol4
+        } else {
+            warehouseInventory.sortData(colNumber, 'desc')
+            ascCol4 = !ascCol4
+        }
+    } else {
+        console.log("error wrong column")
+    }
+
+}
+
+function addNewShipment(e) {
+
+    e.preventDefault()
+
+    const shipmentName = document.querySelector('#eventName').value
+    const shipmentDetails = document.querySelector('#eventDetails').value
+    const shipmentDate = document.querySelector('#eventDate').value
+    const shipmentTime = document.querySelector('#eventTime').value
+
+    const shipmentObj = {name: shipmentName, details: shipmentDetails}
+
+    const row = warehouseDeliverySchedule.rowFinder(1, shipmentTime)
+    const col = warehouseDeliverySchedule.colFinder(shipmentDate)
+
+    warehouseDeliverySchedule.addEvent(shipmentObj, row, col)
+
+    document.querySelector('#eventName').value = ''
+    document.querySelector('#eventDetails').value = ''
+    document.querySelector('#eventDate').value = '' 
+    document.querySelector('#eventTime').value = ''
+}
