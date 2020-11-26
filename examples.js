@@ -42,6 +42,12 @@ sortCol4.addEventListener('click', sortColumn)
 const scheduleAdd = document.querySelector('#scheduleAdd')
 scheduleAdd.addEventListener('submit', addNewShipment)
 
+const scheduleDelete = document.querySelector('#scheduleDelete')
+scheduleDelete.addEventListener('submit', deleteShipment)
+
+const scheduleUpdate = document.querySelector('#scheduleUpdate')
+scheduleUpdate.addEventListener('submit', updateShipment)
+
 function addNewItemToInventory(e) {
     
     e.preventDefault()
@@ -156,4 +162,45 @@ function addNewShipment(e) {
     document.querySelector('#eventDetails').value = ''
     document.querySelector('#eventDate').value = '' 
     document.querySelector('#eventTime').value = ''
+}
+
+function deleteShipment(e) {
+
+    e.preventDefault()
+
+    const eventName = document.querySelector('#eventDeleteName').value
+    const eventDate = document.querySelector('#eventDeleteDate').value
+    const eventTime = document.querySelector('#eventDeleteTime').value
+
+    const row = warehouseDeliverySchedule.rowFinder(1, eventTime)
+    const col = warehouseDeliverySchedule.colFinder(eventDate)
+
+    warehouseDeliverySchedule.deleteEvent(row, col)
+
+    document.querySelector('#eventDeleteName').value = ''
+    document.querySelector('#eventDeleteDate').value = ''
+    document.querySelector('#eventDeleteTime').value = ''
+}
+
+function updateShipment(e) {
+
+    e.preventDefault()
+
+    const eventName = document.querySelector('#eventUpdateName').value
+    const eventDetails = document.querySelector("#eventUpdateDetails").value
+    const eventDate = document.querySelector("#eventUpdateDate").value
+    const eventTime = document.querySelector('#eventUpdateTime').value
+
+    const updatedObj = {name: eventName, details: eventDetails}
+
+    const row = warehouseDeliverySchedule.rowFinder(1, eventTime)
+    const col = warehouseDeliverySchedule.colFinder(eventDate)
+
+    warehouseDeliverySchedule.modifyEvent(updatedObj, row, col)
+
+    document.querySelector('#eventUpdateName').value = ''
+    document.querySelector("#eventUpdateDetails").value = ''
+    document.querySelector("#eventUpdateDate").value = ''
+    document.querySelector('#eventUpdateTime').value = ''
+
 }
