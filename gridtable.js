@@ -6,8 +6,6 @@ const log = console.log
 
 //HOLD OFF FOR NOW:
 //TODO: Add color coding
-//TODO: Add import/export object
-//TODO: Differentiate between Grid and Table
 
 function GridTable() {
     
@@ -304,7 +302,7 @@ function GridTable() {
             */
 
             if (this.gridOrTable === 'grid') {
-                log('This function can only be used on Tables not Grids')
+                log('This function can only be used on Tables not Grids ')
                 return
             }
 
