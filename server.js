@@ -22,9 +22,7 @@ app.use(express.static(path.join(__dirname, '/pub')))
 app.get('/', (req, res) => {
 	// sending a string
 	//res.send('This should be the root route!')
-	res.send('<h1>Instructions and Notes:</h1>')
-	res.send('<h3>Instructions:<h3>')
-	res.send('<p>To access examples.html go to: <a href="https://secret-badlands-58288.herokuapp.com/examples.html">https://secret-badlands-58288.herokuapp.com/examples.html</a></p>')
+	res.send('<h1>Instructions and Notes:</h1><h3>Instructions:</h3><p>To access examples.html go to: <a href="https://secret-badlands-58288.herokuapp.com/examples.html">https://secret-badlands-58288.herokuapp.com/examples.html</a></p>')
 	//sending some HTML
 	// res.sendFile(path.join(__dirname + '/pub/examples.html'))
 })
