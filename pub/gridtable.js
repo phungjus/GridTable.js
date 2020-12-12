@@ -1,11 +1,22 @@
 "use strict";
+
+// const { text } = require("express");
+
 const log = console.log
 
-//CURRENT TASKS:
+//Take examples from examples.html add eventListeners to each thing or not??
+
+//TABLE TASKS:
 //TODO: Add Filtering Feature it filters according to specifications???
 
-//HOLD OFF FOR NOW:
+//GRID TASKS:
 //TODO: Add color coding
+//TODO: Add copying data from one cell to another cell
+//TODO: Drag and Move Rows and Columns around
+//TODO: Create Groupings for each event to display a table
+//TODO: Edit the tooltip to be clickable once clicked it will show event details?
+
+//Go through file to double check all places with tag: CHECK
 
 function GridTable() {
     
@@ -16,7 +27,8 @@ function GridTable() {
     this.uniqueID = undefined
     this.selector = undefined
     this.gridOrTable = undefined
-
+    this.sortAsc = undefined
+    this.queryOperators = ['==', '!=', '<', '<=', '>', '>=']
 }
 
     GridTable.prototype = {
@@ -47,6 +59,8 @@ function GridTable() {
             GridTable.id = 'GridTable' + uniqueID
             const insert = document.getElementById(selector)
 
+            this.sortAsc = new Array(numCols).fill(true)
+
             //Generate the Rows
 
             for (let row = 0; row < numRows; row++) {
@@ -66,9 +80,11 @@ function GridTable() {
                 const text = document.createTextNode('')
                 tableHead.appendChild(text)
                 this.cellData.push({'row': 1, 'col': (col+1), 'data': tableHead.innerText})
+                tableHead.addEventListener('click', (e => this.sortColumn(e, this.sortAsc)))
                 firstRow.appendChild(tableHead)
 
             }
+
 
             for (let row = 1; row < this.rowData.length; row++) {
                 
@@ -88,6 +104,21 @@ function GridTable() {
                 GridTable.appendChild(this.rowData[row])
             }
             insert.append(GridTable)
+        },
+
+        sortColumn: function(e, sortAsc) {
+
+            const id = e.target.id
+            const idLength = id.length
+            const colNumber = parseInt(id[idLength-1])
+
+            if (sortAsc[colNumber-1]) {
+                this.sortData(colNumber, 'asc')
+                sortAsc[colNumber-1] = !sortAsc[colNumber-1]
+            } else {
+                this.sortData(colNumber, 'desc')
+                sortAsc[colNumber-1] = !sortAsc[colNumber-1]
+            }
         },
 
         insertData: function(rowNum, colNum, data) {
@@ -660,6 +691,59 @@ function GridTable() {
             const insert = document.getElementById(this.selector)
 
             insert.appendChild(GridTable)
+
+        },
+
+        filter: function(queryVariable, queryOperator, queryComparison, insertID) {
+
+            if (! (this.queryOperators.includes(queryOperator))) {
+                console.log("not a valid operator")
+                return
+            }
+
+            const insertAt = document.getElementById(insertID)
+            insertAt.innerHTML = ''
+            const header = this.cellData.filter(cell => cell.row === 1)
+            const columnToCheckNumber = header.filter(header => header.data.toLowerCase() == queryVariable.toLowerCase())[0].col
+            const column = this.cellData.filter(cell => cell.col = columnToCheckNumber)
+            const textNode = document.createElement('p')
+            textNode.innerText = "Query Result: "
+            insertAt.append(textNode)
+            const queryTable = document.createElement('table')
+
+
+            if (queryOperator === '==') {
+
+                const similarRow = column.filter(cell => cell.data.toLowerCase() == queryComparison.toLowerCase())
+                const queryTableHeadRow = document.createElement('tr')
+                for (let i = 0; i < header.length; i++) {
+                    const queryTableHead = document.createElement('th')
+                    const queryTableHeadText = document.createTextNode(header[i].data)
+                    queryTableHead.appendChild(queryTableHeadText)
+                    queryTableHeadRow.appendChild(queryTableHead)
+                }
+
+                queryTable.appendChild(queryTableHeadRow)
+
+                for (let j = 0; j < similarRow.length; j++) {
+
+                    const queryRow = document.createElement('tr')
+                    const queryRowData = this.cellData.filter(cell => cell.row === similarRow[j].row)
+
+                    for (let k = 0; k < queryRowData.length; k++) {
+
+                        const queryRowElement = document.createElement('td')
+                        queryRowElement.innerText = queryRowData[k].data
+                        queryRow.appendChild(queryRowElement)
+
+                    }
+
+                    queryTable.appendChild(queryRow)
+                }
+
+                insertAt.appendChild(queryTable)
+
+            }
 
         }
 
