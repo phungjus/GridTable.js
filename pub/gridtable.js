@@ -701,11 +701,13 @@ function GridTable() {
                 return
             }
 
+            const filterData = Array.from(this.cellData)
             const insertAt = document.getElementById(insertID)
             insertAt.innerHTML = ''
-            const header = this.cellData.filter(cell => cell.row === 1)
+            const header = filterData.filter(cell => cell.row === 1)
             const columnToCheckNumber = header.filter(header => header.data.toLowerCase() == queryVariable.toLowerCase())[0].col
-            const column = this.cellData.filter(cell => cell.col = columnToCheckNumber)
+            const column = filterData.filter(cell => cell.col == columnToCheckNumber)
+            console.log(filterData)
             const textNode = document.createElement('p')
             textNode.innerText = "Query Result: "
             insertAt.append(textNode)
@@ -714,7 +716,7 @@ function GridTable() {
 
             if (queryOperator === '==') {
 
-                const similarRow = column.filter(cell => cell.data.toLowerCase() == queryComparison.toLowerCase())
+                const similarRow = column.filter(cell => cell.data.toLowerCase() == queryComparison.toLowerCase()).filter(cell => cell.row !== 1)
                 const queryTableHeadRow = document.createElement('tr')
                 for (let i = 0; i < header.length; i++) {
                     const queryTableHead = document.createElement('th')
@@ -728,7 +730,7 @@ function GridTable() {
                 for (let j = 0; j < similarRow.length; j++) {
 
                     const queryRow = document.createElement('tr')
-                    const queryRowData = this.cellData.filter(cell => cell.row === similarRow[j].row)
+                    const queryRowData = filterData.filter(cell => cell.row === similarRow[j].row)
 
                     for (let k = 0; k < queryRowData.length; k++) {
 
@@ -743,7 +745,162 @@ function GridTable() {
 
                 insertAt.appendChild(queryTable)
 
-            }
+            } else if (queryOperator === '!=') {
+
+                const differentRow = column.filter(cell => cell.data.toLowerCase() !== queryComparison.toLowerCase()).filter(cell => cell.row !== 1)
+                const queryTableHeadRow = document.createElement('tr')
+                for (let i = 0; i < header.length; i++) {
+                    const queryTableHead = document.createElement('th')
+                    const queryTableHeadText = document.createTextNode(header[i].data)
+                    queryTableHead.appendChild(queryTableHeadText)
+                    queryTableHeadRow.appendChild(queryTableHead)
+                }
+
+                queryTable.appendChild(queryTableHeadRow)
+
+                for (let j = 0; j < differentRow.length; j++) {
+
+                    const queryRow = document.createElement('tr')
+                    const queryRowData = this.cellData.filter(cell => cell.row === differentRow[j].row)
+
+                    for (let k = 0; k < queryRowData.length; k++) {
+
+                        const queryRowElement = document.createElement('td')
+                        queryRowElement.innerText = queryRowData[k].data
+                        queryRow.appendChild(queryRowElement)
+
+                    }
+
+                    queryTable.appendChild(queryRow)
+                }
+
+                insertAt.appendChild(queryTable)                
+
+            } else if (queryOperator === '<=') {
+
+                const LE_Row = column.filter(cell => cell.data.toLowerCase() <= queryComparison.toLowerCase()).filter(cell => cell.row !== 1)
+                const queryTableHeadRow = document.createElement('tr')
+                for (let i = 0; i < header.length; i++) {
+                    const queryTableHead = document.createElement('th')
+                    const queryTableHeadText = document.createTextNode(header[i].data)
+                    queryTableHead.appendChild(queryTableHeadText)
+                    queryTableHeadRow.appendChild(queryTableHead)
+                }
+
+                queryTable.appendChild(queryTableHeadRow)
+
+                for (let j = 0; j < LE_Row.length; j++) {
+
+                    const queryRow = document.createElement('tr')
+                    const queryRowData = this.cellData.filter(cell => cell.row === LE_Row[j].row)
+
+                    for (let k = 0; k < queryRowData.length; k++) {
+
+                        const queryRowElement = document.createElement('td')
+                        queryRowElement.innerText = queryRowData[k].data
+                        queryRow.appendChild(queryRowElement)
+
+                    }
+
+                    queryTable.appendChild(queryRow)
+                }
+
+                insertAt.appendChild(queryTable) 
+
+            } else if (queryOperator === '>=') {
+                
+                const GE_Row = column.filter(cell => cell.data.toLowerCase() >= queryComparison.toLowerCase()).filter(cell => cell.row !== 1)
+                const queryTableHeadRow = document.createElement('tr')
+                for (let i = 0; i < header.length; i++) {
+                    const queryTableHead = document.createElement('th')
+                    const queryTableHeadText = document.createTextNode(header[i].data)
+                    queryTableHead.appendChild(queryTableHeadText)
+                    queryTableHeadRow.appendChild(queryTableHead)
+                }
+
+                queryTable.appendChild(queryTableHeadRow)
+
+                for (let j = 0; j < GE_Row.length; j++) {
+
+                    const queryRow = document.createElement('tr')
+                    const queryRowData = this.cellData.filter(cell => cell.row === GE_Row[j].row)
+
+                    for (let k = 0; k < queryRowData.length; k++) {
+
+                        const queryRowElement = document.createElement('td')
+                        queryRowElement.innerText = queryRowData[k].data
+                        queryRow.appendChild(queryRowElement)
+
+                    }
+
+                    queryTable.appendChild(queryRow)
+                }
+
+                insertAt.appendChild(queryTable) 
+
+            } else if (queryOperator == '>') {
+
+                const greaterRow = column.filter(cell => cell.data.toLowerCase() > queryComparison.toLowerCase()).filter(cell => cell.row !== 1)
+                const queryTableHeadRow = document.createElement('tr')
+                for (let i = 0; i < header.length; i++) {
+                    const queryTableHead = document.createElement('th')
+                    const queryTableHeadText = document.createTextNode(header[i].data)
+                    queryTableHead.appendChild(queryTableHeadText)
+                    queryTableHeadRow.appendChild(queryTableHead)
+                }
+
+                queryTable.appendChild(queryTableHeadRow)
+
+                for (let j = 0; j < greaterRow.length; j++) {
+
+                    const queryRow = document.createElement('tr')
+                    const queryRowData = this.cellData.filter(cell => cell.row === greaterRow[j].row)
+
+                    for (let k = 0; k < queryRowData.length; k++) {
+
+                        const queryRowElement = document.createElement('td')
+                        queryRowElement.innerText = queryRowData[k].data
+                        queryRow.appendChild(queryRowElement)
+
+                    }
+
+                    queryTable.appendChild(queryRow)
+                }
+
+                insertAt.appendChild(queryTable) 
+
+            } else if (queryOperator === '<') {
+
+                const lessRow = column.filter(cell => cell.data.toLowerCase() < queryComparison.toLowerCase()).filter(cell => cell.row !== 1)
+                const queryTableHeadRow = document.createElement('tr')
+                for (let i = 0; i < header.length; i++) {
+                    const queryTableHead = document.createElement('th')
+                    const queryTableHeadText = document.createTextNode(header[i].data)
+                    queryTableHead.appendChild(queryTableHeadText)
+                    queryTableHeadRow.appendChild(queryTableHead)
+                }
+
+                queryTable.appendChild(queryTableHeadRow)
+
+                for (let j = 0; j < lessRow.length; j++) {
+
+                    const queryRow = document.createElement('tr')
+                    const queryRowData = this.cellData.filter(cell => cell.row === lessRow[j].row)
+
+                    for (let k = 0; k < queryRowData.length; k++) {
+
+                        const queryRowElement = document.createElement('td')
+                        queryRowElement.innerText = queryRowData[k].data
+                        queryRow.appendChild(queryRowElement)
+
+                    }
+
+                    queryTable.appendChild(queryRow)
+                }
+
+                insertAt.appendChild(queryTable) 
+
+            } 
 
         }
 
