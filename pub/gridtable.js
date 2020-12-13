@@ -5,15 +5,13 @@
 const log = console.log
 
 //Take examples from examples.html add eventListeners to each thing or not??
+//Remove all case-sensitivty in the code change all keys and such to lowercase
 
 //TABLE TASKS:
-//TODO: Add Filtering Feature it filters according to specifications???
+//TODO: Drag and Move Rows and Columns around
 
 //GRID TASKS:
-//TODO: Add color coding
 //TODO: Add copying data from one cell to another cell
-//TODO: Drag and Move Rows and Columns around
-//TODO: Create Groupings for each event to display a table
 //TODO: Edit the tooltip to be clickable once clicked it will show event details?
 
 //Go through file to double check all places with tag: CHECK
@@ -29,6 +27,7 @@ function GridTable() {
     this.gridOrTable = undefined
     this.sortAsc = undefined
     this.queryOperators = ['==', '!=', '<', '<=', '>', '>=']
+    this.eventTag = {}
 }
 
     GridTable.prototype = {
@@ -542,6 +541,17 @@ function GridTable() {
                 return
             }
 
+            if (eventObj.tag !== undefined) {
+                const cellDataClone = Array.from(this.cellData)
+                eventObj.rowInfo = cellDataClone.filter(cell => cell.col === 1 && cell.row === cellRow)[0].data
+                eventObj.colInfo = cellDataClone.filter(cell => cell.col === cellCol && cell.row === 1)[0].data
+                if (eventObj.tag in this.eventTag) {
+                    this.eventTag[eventObj.tag].push(eventObj)
+                } else {
+                    this.eventTag[eventObj.tag] = [eventObj]
+                }
+            }
+
             const cell = document.getElementById("GridTable"+this.uniqueID+"DataRow-"+cellRow+'-Col-'+cellCol)
 
             const tooltipDiv = document.createElement('div')
@@ -597,6 +607,17 @@ function GridTable() {
             if (this.gridOrTable === 'table') {
                 log('This function can only be used on Grids not Tables')
                 return
+            }
+
+            if (updatedEventObj.tag !== undefined) {
+                const cellDataClone = Array.from(this.cellData)
+                updatedEventObj.rowInfo = cellDataClone.filter(cell => cell.col === 1 && cell.row === cellRow)[0].data
+                updatedEventObj.colInfo = cellDataClone.filter(cell => cell.col === cellCol && cell.row === 1)[0].data
+                if (updatedEventObj.tag in this.eventTag) {
+                    this.eventTag[updatedEventObj.tag].push(updatedEventObj)
+                } else {
+                    this.eventTag[updatedEventObj.tag] = [updatedEventObj]
+                }
             }
 
             const cell = document.getElementById("GridTable"+this.uniqueID+"DataRow-"+cellRow+'-Col-'+cellCol)
@@ -698,6 +719,11 @@ function GridTable() {
 
             if (! (this.queryOperators.includes(queryOperator))) {
                 console.log("not a valid operator")
+                return
+            }
+
+            if (this.gridOrTable === 'grid') {
+                console.log("this function is only meant to be used for tables")
                 return
             }
 
@@ -901,6 +927,107 @@ function GridTable() {
                 insertAt.appendChild(queryTable) 
 
             } 
+
+        },
+
+        groupTags: function(tag, insertValue) {
+
+            if (this.gridOrTable === 'table') {
+                console.log("This function is only for Grids")
+                return
+            }
+
+            const insert = document.getElementById(insertValue)
+            insert.innerHTML = ''
+            const tagTable = document.createElement('table')
+
+            if (tag.toLowerCase() === 'all') {
+                
+                const tagTableRowHead = document.createElement('tr')
+                const tagKeys = Object.keys(this.eventTag)
+                const tagObjects = Object.values(this.eventTag)
+                const tagObjectsLengthMax = Math.max(...tagObjects.map(obj => obj.length))
+
+                for (let i = 0; i < tagKeys.length; i++) {
+                    const tagTableHead = document.createElement('th')
+                    const tagTextNode = document.createTextNode(tagKeys[i])
+                    tagTableHead.appendChild(tagTextNode)
+                    tagTableRowHead.appendChild(tagTableHead)
+                }
+
+                tagTable.appendChild(tagTableRowHead)
+
+                for (let j = 0; j < tagObjectsLengthMax; j++) {
+
+                    const tagTableDataRow = document.createElement('tr')
+
+                    for (let k = 0; k < tagObjects.length; k++) {
+
+                        const tagTableData = document.createElement('td')
+
+                        if (tagObjects[k][j] !== undefined) {
+
+                            const tagName = document.createElement('div')
+                            const tagDetails = document.createElement('div')
+                            const tagRowCol = document.createElement('div')
+                            tagName.innerHTML = "<b><u>Event Name:</u> </b>" + tagObjects[k][j].name
+                            tagDetails.innerHTML = "<b><u>Event Details:</u> </b>" + tagObjects[k][j].details
+                            tagRowCol.innerHTML = "<b><u>Event Occurence:</u> </b>" + tagObjects[k][j].colInfo + " " + tagObjects[k][j].rowInfo
+
+                            tagTableData.appendChild(tagName)
+                            tagTableData.appendChild(tagDetails)
+                            tagTableData.appendChild(tagRowCol)
+
+                        } 
+
+                        tagTableDataRow.appendChild(tagTableData)
+
+                    }
+
+                    tagTable.appendChild(tagTableDataRow)
+
+                }
+
+                insert.appendChild(tagTable)
+
+            } else if (tag in this.eventTag) {
+
+                const tagTableRowHead = document.createElement('tr')
+                const tagArray = this.eventTag[tag]
+
+                const tagTableHead = document.createElement('th')
+                const tagTextNode = document.createTextNode(tag.toUpperCase())
+                tagTableHead.appendChild(tagTextNode)
+                tagTableRowHead.appendChild(tagTableHead)
+                tagTable.appendChild(tagTableRowHead)
+
+                for (let i = 0; i < tagArray.length; i++) {
+
+                    const tagTableDataRow = document.createElement('tr')
+                    const tagTableData = document.createElement('td')
+
+                    const tagName = document.createElement('div')
+                    const tagDetails = document.createElement('div')
+                    const tagRowCol = document.createElement('div')
+                    tagName.innerHTML = "<b><u>Event Name:</u> </b>" + tagArray[i].name
+                    tagDetails.innerHTML = "<b><u>Event Details:</u> </b>" + tagArray[i].details
+                    tagRowCol.innerHTML = "<b><u>Event Occurence:</u> </b>" + tagArray[i].colInfo + " " + tagArray[i].rowInfo
+
+                    tagTableData.appendChild(tagName)
+                    tagTableData.appendChild(tagDetails)
+                    tagTableData.appendChild(tagRowCol)
+
+                    tagTableDataRow.appendChild(tagTableData)
+                    tagTable.appendChild(tagTableDataRow)
+
+                }
+
+                insert.appendChild(tagTable)
+
+            } else {
+                console.log("No events with that tag")
+                return
+            }
 
         }
 
