@@ -693,6 +693,8 @@ function GridTable() {
             this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data = this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data.replace(event.outerHTML, "")
         
             const tooltipDiv = document.createElement('div')
+            tooltipDiv.draggable = true
+            tooltipDiv.ondragstart = (ev) => this.drag(ev)
             tooltipDiv.className = 'tooltip'
             tooltipDiv.innerText = updatedEventObj.name
             tooltipDiv.id = ('tooltipDiv'+updatedEventObj.name+'Row'+cellRow+'Col'+cellCol).toLowerCase()
