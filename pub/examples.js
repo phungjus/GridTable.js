@@ -123,7 +123,7 @@ function deleteShipment(e) {
     const row = warehouseDeliverySchedule.rowFinder(1, eventTime)
     const col = warehouseDeliverySchedule.colFinder(eventDate)
 
-    warehouseDeliverySchedule.deleteEvent(row, col)
+    warehouseDeliverySchedule.deleteEvent(eventName, row, col)
 
     document.querySelector('#eventDeleteName').value = ''
     document.querySelector('#eventDeleteDate').value = ''

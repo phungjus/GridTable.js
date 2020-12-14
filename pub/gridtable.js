@@ -52,7 +52,7 @@ function GridTable() {
             this.uniqueID = uniqueID
             this.row = numRows
             this.col = numCols
-            this.gridOrTable = gridOrTable
+            this.gridOrTable = gridOrTable.toLowerCase()
 
             const GridTable = document.createElement('table')
             GridTable.id = 'GridTable' + uniqueID
@@ -90,6 +90,12 @@ function GridTable() {
                 for (let col = 0; col < numCols; col++) {
 
                     const tableData = document.createElement('td')
+                    if (this.gridOrTable === 'grid') {
+
+                        tableData.ondrop = (ev) => this.drop(ev)
+                        tableData.ondragover = (ev) => this.allowDrop(ev)
+
+                    }
                     tableData.id = 'GridTable' + uniqueID + 'DataRow-' + (row+1) + '-Col-' + (col+1)
                     const text = document.createTextNode('')
                     tableData.appendChild(text)
@@ -525,6 +531,60 @@ function GridTable() {
 
         },
 
+        drag: function(event) {
+
+            event.dataTransfer.setData('text', event.target.id)
+
+        },
+
+        allowDrop: function(event) {
+
+            event.preventDefault()
+
+        },
+
+        drop: function(event) {
+
+            event.preventDefault()
+            var data = event.dataTransfer.getData("text")
+            const dataLength = data.length
+            const dataRow = parseInt(data[dataLength-5])
+            const dataCol = parseInt(data[dataLength-1])
+
+            if (event.target.tagName === 'TD') {
+                const targetLength = event.target.id.length
+                const newRow = parseInt(event.target.id[targetLength-7])
+                const newCol = parseInt(event.target.id[targetLength-1])
+                event.target.appendChild(document.getElementById(data))
+
+                const oldToolTip = document.getElementById(data)
+                const oldCellInfo = this.cellData.filter(cell => cell.row === dataRow && cell.col === dataCol)[0]
+                oldCellInfo.data = oldCellInfo.data.replace(oldToolTip.outerHTML, "")
+
+                oldToolTip.id = oldToolTip.id.slice(0, oldToolTip.id.length-8) + "Row" + newRow + "Col" + newCol
+
+                const newCellInfo = this.cellData.filter(cell => cell.row === newRow && cell.col === newCol)[0]
+                newCellInfo.data += oldToolTip.outerHTML
+
+            } else {
+                const targetLength = event.target.parentNode.id.length
+                const newRow = parseInt(event.target.parentNode.id[targetLength-7])
+                const newCol = parseInt(event.target.parentNode.id[targetLength-1])
+                event.target.parentNode.appendChild(document.getElementById(data))
+
+                const oldToolTip = document.getElementById(data)
+
+                const oldCellInfo = this.cellData.filter(cell => cell.row === dataRow && cell.col === dataCol)[0]
+                oldCellInfo.data = oldCellInfo.data.replace(oldToolTip.outerHTML, "")
+
+                oldToolTip.id = oldToolTip.id.slice(0, oldToolTip.id.length-8) + "Row" + newRow + "Col" + newCol
+
+                const newCellInfo = this.cellData.filter(cell => cell.row === newRow && cell.col === newCol)[0]
+                newCellInfo.data += oldToolTip.outerHTML
+            }
+
+        },
+
         addEvent: function(eventObj, cellRow, cellCol) {
             
             /**
@@ -555,9 +615,13 @@ function GridTable() {
             const cell = document.getElementById("GridTable"+this.uniqueID+"DataRow-"+cellRow+'-Col-'+cellCol)
 
             const tooltipDiv = document.createElement('div')
+            tooltipDiv.draggable = true
+            tooltipDiv.ondragstart = (ev) => this.drag(ev)
             tooltipDiv.className = 'tooltip'
             tooltipDiv.innerText = eventObj.name
-            tooltipDiv.id = 'tooltipDiv'+eventObj.name+'Row'+cellRow+'Col'+cellCol
+            tooltipDiv.id = ('tooltipDiv'+eventObj.name+'Row'+cellRow+'Col'+cellCol).toLowerCase()
+
+            //MAKE IT SO THE USER MUST CLICK THE DIV INORDER FOR THE TOOLTIP TO DISPLAY
 
             const tooltipText = document.createElement('span')
             tooltipText.className = 'tooltiptext'
@@ -570,15 +634,16 @@ function GridTable() {
             this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data = cell.innerHTML
         },
 
-        deleteEvent: function(cellRow, cellCol) {
+        deleteEvent: function(eventName, cellRow, cellCol) {
 
             /**
+            * @param {String} eventName
             * @param {Number} cellRow
             * @param {Number} cellCol 
             * 
             * Description:
-            * This function takes in two integers called cellRow and cellCol, it then deletes
-            * the event located at that position.
+            * This function takes in two integers called cellRow and cellCol and a string called eventName, it then deletes
+            * the event located at that position based on eventName.
             */
 
             if (this.gridOrTable === 'table') {
@@ -587,9 +652,10 @@ function GridTable() {
             }
 
             const cell = document.getElementById("GridTable"+this.uniqueID+"DataRow-"+cellRow+'-Col-'+cellCol)
-            cell.innerHTML = ''
+            const event = document.getElementById("tooltipdiv"+ eventName.toLowerCase() + "row" + cellRow + "col" + cellCol)
+            cell.removeChild(event)
 
-            this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data = cell.innerHTML
+            this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data = this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data.replace(event.outerHTML, "")
 
 
         },
@@ -621,12 +687,15 @@ function GridTable() {
             }
 
             const cell = document.getElementById("GridTable"+this.uniqueID+"DataRow-"+cellRow+'-Col-'+cellCol)
-            cell.innerHTML = ''
+            const event = document.getElementById("tooltipdiv"+ updatedEventObj.name.toLowerCase() + "row" + cellRow + "col" + cellCol)
+            cell.removeChild(event)
+
+            this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data = this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data.replace(event.outerHTML, "")
         
             const tooltipDiv = document.createElement('div')
             tooltipDiv.className = 'tooltip'
             tooltipDiv.innerText = updatedEventObj.name
-            tooltipDiv.id = 'tooltipDiv'+updatedEventObj.name+'Row'+cellRow+'Col'+cellCol
+            tooltipDiv.id = ('tooltipDiv'+updatedEventObj.name+'Row'+cellRow+'Col'+cellCol).toLowerCase()
 
             const tooltipText = document.createElement('span')
             tooltipText.className = 'tooltiptext'
