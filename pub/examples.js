@@ -7,7 +7,7 @@ warehouseInventory.updateRow(2, ['001', 'PS5 Digital Edition Console', '699', '4
 warehouseInventory.updateRow(3, ['002', 'PS5 Console', '378', '629.99'])
 warehouseInventory.updateRow(4, ['003', 'Xbox Series X', '981', '599.99'])
 warehouseInventory.updateRow(5, ['004', 'Xbox Series S', '467', '379.99'])
-warehouseInventory.colSwap(1, 2)
+// warehouseInventory.colSwap(1, 2)
 
 warehouseDeliverySchedule.makeGridTable(10, 6, 'warehouseDeliverySchedule', 'warehouseDeliveryScheduleGrid', 'grid')
 warehouseDeliverySchedule.updateHeader(['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])

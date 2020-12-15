@@ -77,6 +77,10 @@ function GridTable() {
                 this.cellData.push({'row': 1, 'col': (col+1), 'data': tableHead.innerText})
                 if (this.gridOrTable === 'table') {
                     tableHead.addEventListener('click', (e => this.sortColumn(e, this.sortAsc)))
+                    tableHead.ondrop = (ev) => this.tableHeadDrop(ev)
+                    tableHead.ondragover = (ev) => this.allowDrop(ev)
+                    tableHead.draggable = true
+                    tableHead.ondragstart = (ev) => this.drag(ev)
                 }
                 firstRow.appendChild(tableHead)
 
@@ -90,7 +94,13 @@ function GridTable() {
                     const tableData = document.createElement('td')
                     if (this.gridOrTable === 'grid') {
                         tableData.ondrop = (ev) => this.gridDrop(ev)
-                        tableData.ondragover = (ev) => this.gridAllowDrop(ev)
+                        tableData.ondragover = (ev) => this.allowDrop(ev)
+                    }
+                    if (this.gridOrTable === 'table' && col === 0) {
+                        tableData.ondrop = (ev) => this.tableRowDrop(ev)
+                        tableData.ondragover = (ev) => this.allowDrop(ev)
+                        tableData.draggable = true
+                        tableData.ondragstart = (ev) => this.drag(ev)
                     }
                     tableData.id = 'GridTable' + uniqueID + 'DataRow-' + (row+1) + '-Col-' + (col+1)
                     const text = document.createTextNode('')
@@ -105,6 +115,34 @@ function GridTable() {
                 GridTable.appendChild(this.rowData[row])
             }
             insert.append(GridTable)
+        },
+
+        tableRowDrop: function(event) {
+
+            event.preventDefault()
+            const originalID = event.dataTransfer.getData("text")
+            const newID = event.target.id
+            const originalRowNumber = parseInt(originalID.split('-')[1])
+            const newRowNumber = parseInt(newID.split('-')[1])
+            
+            if (originalRowNumber === 1) {
+                return
+            }
+
+            this.rowSwap(originalRowNumber, newRowNumber)
+
+        },
+
+        tableHeadDrop: function(event) {
+
+            event.preventDefault()
+            const originalID = event.dataTransfer.getData("text")
+            const newID = event.target.id
+            const originalColNumber = parseInt(originalID.split('-')[3])
+            const newColNumber = parseInt(newID.split('-')[3])
+
+            this.colSwap(originalColNumber, newColNumber)
+
         },
 
         sortColumn: function(e, sortAsc) {
@@ -367,7 +405,7 @@ function GridTable() {
             */
 
             if (this.gridOrTable === 'grid') {
-                log('This function can only be used on Tables not Grids ')
+                console.log('This function can only be used on Tables not Grids ')
                 return
             }
 
@@ -382,7 +420,7 @@ function GridTable() {
                 } else if (direction == 'desc') {
                     colValues.sort((a,b) => (b.data-a.data))
                 } else {
-                    log("error, wrong sorting dir") 
+                    console.log("error, wrong sorting dir") 
                 }
             } else {
                 if (direction == 'asc') {
@@ -416,7 +454,7 @@ function GridTable() {
                         return 0;
                     })
                 } else {
-                    log("error, wrong sorting dir")
+                    console.log("error, wrong sorting dir")
                 }
             }
 
@@ -442,8 +480,6 @@ function GridTable() {
                 this.updateRow(rowCounter, newFilteredArray[rowCounter-2])
 
             }
-
-            console.log(this.cellData)
 
         },
         
@@ -592,13 +628,13 @@ function GridTable() {
  
         },
 
-        gridDrag: function(event) {
+        drag: function(event) {
 
             event.dataTransfer.setData('text', event.target.id)
 
         },
 
-        gridAllowDrop: function(event) {
+        allowDrop: function(event) {
 
             event.preventDefault()
 
@@ -608,8 +644,6 @@ function GridTable() {
 
             event.preventDefault()
             var data = event.dataTransfer.getData("text")
-            console.log(data)
-            console.log(event.target)
             const dataLength = data.length
             const dataRow = parseInt(data[dataLength-5])
             const dataCol = parseInt(data[dataLength-1])
@@ -660,7 +694,7 @@ function GridTable() {
             */
             
             if (this.gridOrTable === 'table') {
-                log('This function can only be used on Grids not Tables')
+                console.log('This function can only be used on Grids not Tables')
                 return
             }
 
@@ -679,7 +713,7 @@ function GridTable() {
 
             const tooltipDiv = document.createElement('div')
             tooltipDiv.draggable = true
-            tooltipDiv.ondragstart = (ev) => this.gridDrag(ev)
+            tooltipDiv.ondragstart = (ev) => this.drag(ev)
             tooltipDiv.className = 'tooltip'
             tooltipDiv.innerText = eventObj.name
             tooltipDiv.id = ('tooltipDiv'+eventObj.name+'Row'+cellRow+'Col'+cellCol).toLowerCase()
@@ -722,7 +756,7 @@ function GridTable() {
             */
 
             if (this.gridOrTable === 'table') {
-                log('This function can only be used on Grids not Tables')
+                console.log('This function can only be used on Grids not Tables')
                 return
             }
 
@@ -746,7 +780,7 @@ function GridTable() {
             */
 
             if (this.gridOrTable === 'table') {
-                log('This function can only be used on Grids not Tables')
+                console.log('This function can only be used on Grids not Tables')
                 return
             }
 
@@ -769,7 +803,7 @@ function GridTable() {
         
             const tooltipDiv = document.createElement('div')
             tooltipDiv.draggable = true
-            tooltipDiv.ondragstart = (ev) => this.gridDrag(ev)
+            tooltipDiv.ondragstart = (ev) => this.drag(ev)
             tooltipDiv.className = 'tooltip'
             tooltipDiv.innerText = updatedEventObj.name
             tooltipDiv.id = ('tooltipDiv'+updatedEventObj.name+'Row'+cellRow+'Col'+cellCol).toLowerCase()
@@ -879,7 +913,6 @@ function GridTable() {
             const header = filterData.filter(cell => cell.row === 1)
             const columnToCheckNumber = header.filter(header => header.data.toLowerCase() == queryVariable.toLowerCase())[0].col
             const column = filterData.filter(cell => cell.col == columnToCheckNumber)
-            console.log(filterData)
             const textNode = document.createElement('p')
             textNode.innerText = "Query Result: "
             insertAt.append(textNode)
