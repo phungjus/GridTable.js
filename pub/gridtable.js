@@ -8,10 +8,7 @@ const log = console.log
 //Remove all case-sensitivty in the code change all keys and such to lowercase
 
 //TABLE TASKS:
-//TODO: Button Click to Swap Rows and Columns?
-
-//GRID TASKS:
-//TODO: Edit the tooltip to be clickable once clicked it will show event details?
+//TODO: Draggable TH and TD, for the Table Head try to make it so only can drop on other TH elements
 
 //Go through file to double check all places with tag: CHECK
 
@@ -63,7 +60,7 @@ function GridTable() {
 
             for (let row = 0; row < numRows; row++) {
                 const tableRow = document.createElement('tr')
-                tableRow.id = 'GridTable' + uniqueID + 'Row' + (row + 1)
+                tableRow.id = 'GridTable' + uniqueID + 'Row-' + (row + 1)
                 this.rowData.push(tableRow)
             }
 
@@ -78,7 +75,9 @@ function GridTable() {
                 const text = document.createTextNode('')
                 tableHead.appendChild(text)
                 this.cellData.push({'row': 1, 'col': (col+1), 'data': tableHead.innerText})
-                tableHead.addEventListener('click', (e => this.sortColumn(e, this.sortAsc)))
+                if (this.gridOrTable === 'table') {
+                    tableHead.addEventListener('click', (e => this.sortColumn(e, this.sortAsc)))
+                }
                 firstRow.appendChild(tableHead)
 
             }
@@ -90,10 +89,8 @@ function GridTable() {
 
                     const tableData = document.createElement('td')
                     if (this.gridOrTable === 'grid') {
-
-                        tableData.ondrop = (ev) => this.drop(ev)
-                        tableData.ondragover = (ev) => this.allowDrop(ev)
-
+                        tableData.ondrop = (ev) => this.gridDrop(ev)
+                        tableData.ondragover = (ev) => this.gridAllowDrop(ev)
                     }
                     tableData.id = 'GridTable' + uniqueID + 'DataRow-' + (row+1) + '-Col-' + (col+1)
                     const text = document.createTextNode('')
@@ -141,7 +138,7 @@ function GridTable() {
             */
 
             if (this.checkInitialization()) {
-                Error("Please create a table before inserting data")
+                return Error("Please create a table before inserting data")
             }
 
             const cell = document.getElementById("GridTable"+this.uniqueID+"DataRow-"+rowNum+'-Col-'+colNum)
@@ -210,7 +207,7 @@ function GridTable() {
             */
 
             if (this.checkInitialization() || updatedList.length !== this.col) {
-                Error("Create Table First or Size List != Number of Columns")
+                return Error("Create Table First or Size List != Number of Columns")
             }
 
             for (let col = 0; col < this.col; col++) {
@@ -239,7 +236,7 @@ function GridTable() {
             */
 
             if (this.checkInitialization() || colNum > this.col || colNum < 1 || updatedList.length > this.row) {
-                Error(("Create Table First or Size List != Number of Rows or colNum > Number of Columcs or colNum < 1"))
+                return Error("Create Table First or Size List != Number of Rows or colNum > Number of Columcs or colNum < 1")
             }
 
             for (let row = 1; row < this.row; row++) {
@@ -266,7 +263,7 @@ function GridTable() {
             */
 
             if (this.checkInitialization() || listOfNewHeaders.length !== this.col) {
-                Error("Create Table First or Size of Headers List != Number of Columns")
+                return Error("Create Table First or Size of Headers List != Number of Columns")
             }
 
             this.updateRow(1, listOfNewHeaders)
@@ -287,9 +284,9 @@ function GridTable() {
             */
 
             if (this.checkInitialization() || rowNum > this.row || rowNum === 1) {
-                Error("Create Table First or rowNum > Number of Rows or can't delete header")
+                return Error("Create Table First or rowNum > Number of Rows or can't delete header")
             }
-            const rowToDelete = document.getElementById("GridTable"+this.uniqueID+"Row"+rowNum)
+            const rowToDelete = document.getElementById("GridTable"+this.uniqueID+"Row-"+rowNum)
             rowToDelete.parentNode.removeChild(rowToDelete)
 
 
@@ -301,7 +298,7 @@ function GridTable() {
 
             for (let row = rowNum; row < this.row; row++) {
 
-                const rowUpdate = document.getElementById("GridTable"+this.uniqueID+"Row"+(row+1))
+                const rowUpdate = document.getElementById("GridTable"+this.uniqueID+"Row-"+(row+1))
 
                 for (let col = 0; col < this.col; col++) {
 
@@ -310,7 +307,7 @@ function GridTable() {
 
                 }
 
-                rowUpdate.id = "GridTable"+this.uniqueID+"Row"+(row)
+                rowUpdate.id = "GridTable"+this.uniqueID+"Row-"+(row)
 
             }
 
@@ -332,7 +329,7 @@ function GridTable() {
             */
 
             if (this.checkInitialization() || colNum > this.col || colNum < 1) {
-                Error("Create Table First or colNum > Number of Cols or colNum < 1")
+                return Error("Create Table First or colNum > Number of Cols or colNum < 1")
             }
 
             this.cellData = this.cellData.filter(cell => cell.col !== colNum)
@@ -446,6 +443,8 @@ function GridTable() {
 
             }
 
+            console.log(this.cellData)
+
         },
         
         addRow: function(rowData) {
@@ -462,12 +461,12 @@ function GridTable() {
             */
 
             if (rowData.length !== this.col) {
-                Error("Values provided don't match up with number of columns")
+                return Error("Values provided don't match up with number of columns")
             }
 
             const GridTable = document.getElementById("GridTable" + this.uniqueID)
             const tableRow = document.createElement('tr')
-            tableRow.id = 'GridTable'+this.uniqueID+'Row' + (this.row + 1)
+            tableRow.id = 'GridTable'+this.uniqueID+'Row-' + (this.row + 1)
 
             for (let i = 0; i < rowData.length; i++) {
                 
@@ -500,10 +499,10 @@ function GridTable() {
             */
 
             if (colData.length !== this.row) {
-                Error("Number of values in input do not match number of rows in GridTable")
+                return Error("Number of values in input do not match number of rows in GridTable")
             }
 
-            const tableHead = document.getElementById("GridTable"+this.uniqueID+"Row1")
+            const tableHead = document.getElementById("GridTable"+this.uniqueID+"Row-1")
             const tableDataHead = document.createElement('th')
             tableDataHead.id = 'GridTable'+this.uniqueID+'DataRow-1-Col-' + (this.col+1)
             const textHead = document.createTextNode(colData[0])
@@ -514,7 +513,7 @@ function GridTable() {
 
             for (let row = 1; row < this.row; row++) {
 
-                const tableRow = document.getElementById("GridTable"+this.uniqueID+"Row"+(row+1))
+                const tableRow = document.getElementById("GridTable"+this.uniqueID+"Row-"+(row+1))
                 const tableData = document.createElement('td')
                 tableData.id = 'GridTable'+this.uniqueID+'DataRow-' + (row+1) + '-Col-' + (this.col+1)
                 const text = document.createTextNode(colData[row])
@@ -530,22 +529,87 @@ function GridTable() {
 
         },
 
-        drag: function(event) {
+        rowSwap: function(rowIndexOne, rowIndexTwo) {
+
+            const table = "GridTable" + this.uniqueID
+            const rowOneID = "GridTable" + this.uniqueID + "Row-" + rowIndexOne
+            const rowTwoID = "GridTable" + this.uniqueID + "Row-" + rowIndexTwo
+
+            const tableRows = document.getElementById(table)
+            const rowOne = document.getElementById(rowOneID)
+            const rowTwo = document.getElementById(rowTwoID)
+
+            const rowOneChildren = rowOne.childNodes
+            const rowTwoChildren = rowTwo.childNodes
+
+            const rowOneCells = this.cellData.filter(cell => cell.row === rowIndexOne)
+            const rowTwoCells = this.cellData.filter(cell => cell.row === rowIndexTwo)
+
+            if (rowIndexOne < rowIndexTwo) {
+                tableRows.insertBefore(rowTwo, rowOne)
+            } else if (rowIndexOne > rowIndexTwo) {
+                tableRows.insertBefore(rowOne, rowTwo)
+            }
+
+            for (let i = 0; i < rowOneChildren.length; i++) {
+
+                rowOneChildren[i].id = "GridTable" + this.uniqueID + "DataRow-" + rowIndexTwo + "-Col-" + (i+1)
+                rowTwoChildren[i].id = "GridTable" + this.uniqueID + "DataRow-" + rowIndexOne + "-Col-" + (i+1)
+                rowOneCells[i].row = rowIndexTwo
+                rowTwoCells[i].row = rowIndexOne
+
+            }
+
+            rowOne.id = rowTwoID
+            rowTwo.id = rowOneID
+
+        },
+
+        colSwap: function(colOneIndex, colTwoIndex) {
+
+            const colOneCells = this.cellData.filter(cell => cell.col === colOneIndex)
+            const colTwoCells = this.cellData.filter(cell => cell.col === colTwoIndex)
+
+            for (let i = 0; i < this.row; i++) {
+
+                const rowHTML = document.getElementById("GridTable" + this.uniqueID + "Row-" + (i+1))
+                const tableDataHTMLOne = document.getElementById("GridTable" + this.uniqueID + "DataRow-" + (i+1) + "-Col-" + colOneIndex)
+                const tableDataHTMLTwo = document.getElementById("GridTable" + this.uniqueID + "DataRow-" + (i+1) + "-Col-" + colTwoIndex)
+
+                if (colOneIndex < colTwoIndex) {
+                    rowHTML.insertBefore(tableDataHTMLTwo, tableDataHTMLOne)
+                } else if (colOneIndex > colTwoIndex) {
+                    rowHTML.insertBefore(tableDataHTMLOne, tableDataHTMLTwo)
+                }
+
+                tableDataHTMLOne.id = "GridTable" + this.uniqueID + "DataRow-" + (i+1) + "-Col-" + colTwoIndex
+                tableDataHTMLTwo.id = "GridTable" + this.uniqueID + "DataRow-" + (i+1) + "-Col-" + colOneIndex
+
+                colOneCells[i].col = colTwoIndex
+                colTwoCells[i].col = colOneIndex
+
+            }
+ 
+        },
+
+        gridDrag: function(event) {
 
             event.dataTransfer.setData('text', event.target.id)
 
         },
 
-        allowDrop: function(event) {
+        gridAllowDrop: function(event) {
 
             event.preventDefault()
 
         },
 
-        drop: function(event) {
+        gridDrop: function(event) {
 
             event.preventDefault()
             var data = event.dataTransfer.getData("text")
+            console.log(data)
+            console.log(event.target)
             const dataLength = data.length
             const dataRow = parseInt(data[dataLength-5])
             const dataCol = parseInt(data[dataLength-1])
@@ -615,7 +679,7 @@ function GridTable() {
 
             const tooltipDiv = document.createElement('div')
             tooltipDiv.draggable = true
-            tooltipDiv.ondragstart = (ev) => this.drag(ev)
+            tooltipDiv.ondragstart = (ev) => this.gridDrag(ev)
             tooltipDiv.className = 'tooltip'
             tooltipDiv.innerText = eventObj.name
             tooltipDiv.id = ('tooltipDiv'+eventObj.name+'Row'+cellRow+'Col'+cellCol).toLowerCase()
@@ -705,7 +769,7 @@ function GridTable() {
         
             const tooltipDiv = document.createElement('div')
             tooltipDiv.draggable = true
-            tooltipDiv.ondragstart = (ev) => this.drag(ev)
+            tooltipDiv.ondragstart = (ev) => this.gridDrag(ev)
             tooltipDiv.className = 'tooltip'
             tooltipDiv.innerText = updatedEventObj.name
             tooltipDiv.id = ('tooltipDiv'+updatedEventObj.name+'Row'+cellRow+'Col'+cellCol).toLowerCase()
@@ -763,7 +827,7 @@ function GridTable() {
 
                 const rowData = this.cellData.filter(cell => cell.row === rowCounter + 1)
                 const rowHTML = document.createElement('tr')
-                rowHTML.id = "GridTable" + this.uniqueID + 'Row' + (rowCounter+1)
+                rowHTML.id = "GridTable" + this.uniqueID + 'Row-' + (rowCounter+1)
 
                 for (let colCounter = 0; colCounter < rowData.length; colCounter++) {
 
