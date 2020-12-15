@@ -8,10 +8,9 @@ const log = console.log
 //Remove all case-sensitivty in the code change all keys and such to lowercase
 
 //TABLE TASKS:
-//TODO: Drag and Move Rows and Columns around
+//TODO: Button Click to Swap Rows and Columns?
 
 //GRID TASKS:
-//TODO: Add copying data from one cell to another cell
 //TODO: Edit the tooltip to be clickable once clicked it will show event details?
 
 //Go through file to double check all places with tag: CHECK
@@ -620,18 +619,30 @@ function GridTable() {
             tooltipDiv.className = 'tooltip'
             tooltipDiv.innerText = eventObj.name
             tooltipDiv.id = ('tooltipDiv'+eventObj.name+'Row'+cellRow+'Col'+cellCol).toLowerCase()
-
+            tooltipDiv.onclick = (ev) => this.display(ev)
             //MAKE IT SO THE USER MUST CLICK THE DIV INORDER FOR THE TOOLTIP TO DISPLAY
 
             const tooltipText = document.createElement('span')
             tooltipText.className = 'tooltiptext'
             tooltipText.innerText = eventObj.details
+            tooltipText.style.display = 'none' 
 
             tooltipDiv.appendChild(tooltipText)
 
             cell.appendChild(tooltipDiv)
 
             this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data = cell.innerHTML
+        },
+
+        display: function(event) {
+
+            const docElement = event.target.childNodes[1]
+            if (docElement.style.display === 'none') {
+                docElement.style.display = 'block'
+            } else {
+                docElement.style.display = 'none'
+            }
+
         },
 
         deleteEvent: function(eventName, cellRow, cellCol) {
