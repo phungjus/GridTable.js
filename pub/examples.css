@@ -1,3 +1,23 @@
-h1 {
-    text-align: center;
+.center {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 40%;
+    height: 100px;
+}
+
+#examples {
+    /* border: 1px green solid; */
+    width: 80%;
+    margin-top: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.language-js {
+    display: block;
+}
+
+.example {
+    margin-top: 20px
 }

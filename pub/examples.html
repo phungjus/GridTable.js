@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Warehouse Dashboard</title>
+    <title>Grid Table: Examples</title>
 
     <script defer type="text/javascript" src='gridtable.js'></script>
 
@@ -16,62 +16,173 @@
 </head>
 <body>
     <div id="root">
-        <div id='test'></div>
-        <h1>Warehouse Dashboard</h1>
-        <h2>Current Inventory Status:</h2>
-        <h3>Add Item:</h3>
-        <form id='inventoryAdd'>
-            <input id='itemID' type='text' name='itemID' placeholder="Item ID">
-            <input id='itemName' type="text" name="itemName" placeholder="Item Name">
-            <input id="itemQuantity" type="text" name="itemQuantity" placeholder="Item Quantity">
-            <input id="itemPrice" type="text" name="itemPrice" placeholder="Item Price">
-            <input type="submit" value="Add Item">
-        </form>
-        <h3>Delete Item:</h3>
-        <form id="inventoryDelete">
-            <input type='text' id="deleteItemID" name="deleteItemID" placeholder="Item ID">
-            <input type="submit" value="Delete Item">
-        </form>
+        <img src="./GridTable.js.svg" alt="GridTable.js" class="center">
+        <div id="examples">
+            <h1>Examples:</h1>
+            <h2>Table</h2>
+            <h3>Create a Table:</h3>
+            <!-- <p>
+                API Documentation: Creates a basic table with no data inside based on the number of rows and columns specified. The first two inputs represent the number of rows, and number of columns of the Table, the third input represents where on the HTML page you wish to insert the table, and the fourth input is a unique name that each GridTable must have to distinguish it from other tables
+            </p> -->
+            <p>
+                A user can create an empty table by simply entering the number of rows and columns they wish their table to have you can try below:
+            </p>
+            <form id="createTable">
+                <input id="numRows" type="number" placeholder="Num of Rows" min="0">
+                <input id="numCols" type="number" placeholder="Num of Columns" min="0">
+                <input type="submit" value="Create Table">
+            </form>
+            <div id="exampleDiv" class="example"></div>
 
-        <h3>Modify Item Field:</h3>
-        <form id="inventoryModify">
-            <input type="text" id="modifyItemID" name="modifyItemID" placeholder="Item ID">
-            <input type="text" id="modifyItemProperty" name="modifyItemProperty" placeholder="Property of Item">
-            <input type="text" id="modifyItemNewValue" name="modifyItemNewValue" placeholder="New Value">
-            <input type="submit" value="Update Item">
-        </form>
+            <!-- <code class="language-js">
+                const exampleTable = new GridTable()
+            </code>
+            <code class="language-js">
+                exampleTable.makeGridTable(3, 3, 'exampleDiv', 'example', 'table')
+            </code> -->
+            
+            <h3>Insert data into the Table:</h3>
+            <!-- <p>
+                Adds data to a particular cell in the table. The first two inputs represent the row and column of the cell, and the third input represents the data we wish to insert into that cell.
+            </p> -->
+            <p>The user can simply insert data into any cell they wish by entering the cell's row and column along with the data they wish to insert</p>
+            <form id="insertData">
+                <input id="insertRow" type="number" placeholder="Row Number" min="2" max="4" style="width: 150px;">
+                <input id="insertCol" type="number" placeholder="Col Number" min="1" max="4" style="width: 150px;">
+                <input id="insertText" type="text" placeholder="Text">
+                <input type="submit" value="Insert Data">
+            </form>
+            <div id="example2Div" class="example"></div>
+            <!-- <code class="language-js">
+                const exampleTable = new GridTable()
+            </code>
+            <code class="language-js">
+                exampleTable.makeGridTable(3, 3, 'exampleDiv', 'example', 'table')
+            </code>
+            <code class="language-js">
+                exampleTable.insertData(1, 1, 'Title 1')
+            </code>
+            <code class="language-js">
+                exampleTable.insertData(1, 2, 'Title 2')
+            </code>
+            <code class="language-js">
+                exampleTable.insertData(1, 3, 'Title 3')
+            </code>
+            <code class="language-js">
+                exampleTable.insertData(2, 1, 'Cell at (1, 1)')
+            </code> -->
+            
+            <h3>Update a Row:</h3>
+            <!-- <p>Updates a row inside the table, the first input represents the row you wish to update and the second input is an array of the new values in that row.</p> -->
+            <p>The user can update any row they wish in the table by simply entering the row number of the row they wish to update along with the new values for the row, try below:</p>
+            <form id="updateRow">
+                <input id="rowUpdate" type="number" placeholder="Row Number" min="1" max="4" style="width: 150px;">
+                <input id="columnOne" type="text" placeholder="Value 1">
+                <input id="columnTwo" type="text" placeholder="Value 2">
+                <input id="columnThree" type="text" placeholder="Value 3">
+                <input id="columnFour" type="text" placeholder="Value 4">
+                <input type="submit" value="Update Row">
+            </form>
+            <div id="example3Div" class="example"></div>
+            <!-- <code class="language-js">
+                const exampleTable = new GridTable()
+            </code>
+            <code class="language-js">
+                exampleTable.makeGridTable(3, 3, 'exampleDiv', 'example', 'table')
+            </code>
+            <code class="language-js">
+                exampleTable.updateRow(1, ['NewTitle1', 'NewTitle2', 'NewTitle3'])
+            </code> -->
+            <div id="example3Div" class="example"></div>
 
-        <div id="warehouseInventoryTable">
-            <!-- Insert Warehouse Inventory here with some dummy data -->
-        </div>
-        <h2>Warehouse Delivery Schedule:</h2>
-        <h3>Add Shipment to Schedule:</h3>
-        <form id='scheduleAdd'>
-            <input type="text" id="eventName" name="eventName" placeholder="Enter Shipment Name">
-            <input type="text" id="eventDetails" name="eventDetails" placeholder="Details of Shipment">
-            <input type="text" id="eventDate" name="eventDate" placeholder="Day of Shipment">
-            <input type="text" id="eventTime" name="eventTime" placeholder="Enter Time Slot of Shipment">
-            <input type="submit" value="Add Shippment">
-        </form>
+            <h3>Update a Column:</h3>
+            <!-- <p>Updates a column inside the table, the first input represents the column you wish to update and the second input is an array of the new values from top to bottom.</p> -->
+            <p>The user can update any column's data besides the header itself if they wish to in the table by simply entering the column number of the column they wish to update along with the new values for the column, try below:</p>
+            <form id="updateCol">
+                <input id="colUpdate" type="number" placeholder="Column Number" min="1" max="4" style="width: 150px;">
+                <input id="rowOne" type="text" placeholder="Value 1">
+                <input id="rowTwo" type="text" placeholder="Value 2">
+                <input id="rowThree" type="text" placeholder="Value 3">
+                <input type="submit" value="Update Column">
+            </form>
+            <div id="example4Div" class="example"></div>
 
-        <h3>Delete Shipment from Schedule:</h3>
-        <form id="scheduleDelete">
-            <input type="text" id="eventDeleteName" name="eventDeleteName" placeholder="Shipment Name">
-            <input type="text" id="eventDeleteDate" name="eventDeleteDate" placeholder="Day of Shipment">
-            <input type="text" id="eventDeleteTime" name="eventDeleteTime" placeholder="Enter Time Slot of Shipment">
-            <input type="submit" value="Delete Shippment">
-        </form>
+            <!-- <code class="language-js">
+                const exampleTable = new GridTable()
+            </code>
+            <code class="language-js">
+                exampleTable.makeGridTable(3, 3, 'exampleDiv', 'example', 'table')
+            </code>
+            <code class="language-js">
+                exampleTable.updateCol(1, ['Cell 1', 'Cell 2'])
+            </code> -->
 
-        <h3>Update Shipment Information: </h3>
-        <form id="scheduleUpdate">
-            <input type="text" id="eventUpdateName" name="eventUpdateName" placeholder="Shipment Name">
-            <input type="text" id="eventUpdateDetails" name="eventUpdateDetails" placeholder="Shipment Details">
-            <input type="text" id="eventUpdateDate" name="eventUpdateDate" placeholder="Day of Shipment">
-            <input type="text" id="eventUpdateTime" name="eventUpdateTime" placeholder="Enter Time Slot of Shipment">
-            <input type="submit" value="Update Shippment">
-        </form>
-        <div id='warehouseDeliverySchedule'>
-            <!-- Insert Warehouse Delivery Schedule here with some dummy shipments -->
+            <h3>Delete a Row:</h3>
+            <!-- <p>Deletes a row from the table, the input represents the number of the row that you wish to delete.</p> -->
+            <p>The user can delete a row as long as it isn't the first row from the column by specifying the row number of the row they wish to delete, try deleting row 2 below:</p>
+            <form id="deleteRow">
+                <input id="rowNumDelete" type="number" placeholder="Row Number" min="2" max="2" style="width: 150px;">
+                <input type="submit" value="Delete Row" id="deleteRowSubmit">
+            </form>
+            <div id="example5Div" class="example"></div>
+            <!-- <code class="language-js">
+                const exampleTable = new GridTable()
+            </code>
+            <code class="language-js">
+                exampleTable.makeGridTable(3, 3, 'exampleDiv', 'example', 'table')
+            </code>
+            <code class="language-js">
+                exampleTable.deleteRow(2)
+            </code> -->
+
+            <h3>Add a Row:</h3>
+            <!-- <p>Adds a row to the table, the input represents an array of values for the new row.</p> -->
+            <p>The user can easily add more rows to the table by simply specifying all the values of the new row, try below:</p>
+            <form id="addRow">
+                <input id="firstCell" type="text" placeholder="Cell One">
+                <input id="secondCell" type="text" placeholder="Cell Two">
+                <input type="submit" value="Add Row">
+            </form>
+            <div id="example6Div" class="example"></div>
+            <!-- <code class="language-js">
+                const exampleTable = new GridTable()
+            </code>
+            <code class="language-js">
+                exampleTable.makeGridTable(3, 3, 'exampleDiv', 'example', 'table')
+            </code>
+            <code class="language-js">
+                exampleTable.addRow(['Row 4 Col 1', 'Row 4 Col 2', 'Row 4 Col 3'])
+            </code> -->
+
+            <h3>Add a Col:</h3>
+            
+            <!-- <p>Adds a column to the table, the input represents an array of values for the new column with values from top to bottom</p> -->
+            <p>The user can easily add more columns to the table by simply specifying all the values of the new column, try below:</p>
+            <form id="addCol">
+                <input id="rowOneCell" type="text" placeholder="Column Header">
+                <input id="rowTwoCell" type="text" placeholder="Value One">
+                <input type="submit" value="Add Column">
+            </form>
+            <div id="example7Div" class="example"></div>
+            <!-- <code class="language-js">
+                const exampleTable = new GridTable()
+            </code>
+            <code class="language-js">
+                exampleTable.makeGridTable(3, 3, 'exampleDiv', 'example', 'table')
+            </code>
+            <code class="language-js">
+                exampleTable.addCol(['Row 1 Col 4', 'Row 2 Col 4', 'Row 3 Col 4'])
+            </code> -->
+            <div id="example7Div" class="example"></div>
+
+            <h3>Additional Features:</h3>
+            <p>The user can easily sort each column by simply clicking on the header cell of the column, click once for ascending order and again for descending order</p>
+            <p>The user can also re-arrange columns by clicking on the columns header cell and dragging it left and right to the place you wish for that column to be</p>
+            <p>The user can also re-arrange rows by clicking on each rows first cell from the left and dragging it up and down to the place you wish for that row to be</p>
+            <div id="example8Div" class="example"></div>
+            
+            <hr>
+            <h2>Grid</h2>
         </div>
     </div>
 </body>

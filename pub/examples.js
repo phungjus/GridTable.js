@@ -1,155 +1,145 @@
-const warehouseInventory = new GridTable()
-const warehouseDeliverySchedule = new GridTable()
+//ADD SOME DYNAMIC EXAMPLES BY ALLOWING THE USER TO ENTER THEIR OWN INPUTS
 
-warehouseInventory.makeGridTable(5, 4, 'warehouseInventoryTable', 'warehouseInventoryTable', 'table')
-warehouseInventory.updateHeader(['Item ID', 'Item Name', 'Item Quantity', 'Item Price ($)'])
-warehouseInventory.updateRow(2, ['001', 'PS5 Digital Edition Console', '699', '499.99'])
-warehouseInventory.updateRow(3, ['002', 'PS5 Console', '378', '629.99'])
-warehouseInventory.updateRow(4, ['003', 'Xbox Series X', '981', '599.99'])
-warehouseInventory.updateRow(5, ['004', 'Xbox Series S', '467', '379.99'])
-// warehouseInventory.colSwap(1, 2)
+function examples() {
 
-warehouseDeliverySchedule.makeGridTable(10, 6, 'warehouseDeliverySchedule', 'warehouseDeliveryScheduleGrid', 'grid')
-warehouseDeliverySchedule.updateHeader(['', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'])
-warehouseDeliverySchedule.updateCol(1, ['9:00AM', '10:00AM', '11:00AM', '12:00PM', '1:00PM', '2:00PM', '3:00PM', '4:00PM', '5:00PM'])
-warehouseDeliverySchedule.addEvent({name: 'Sony Delivery', details: '550 units of PS5 consoles being shipped from Sony', 'tag': 'Sony'}, 3, 2)
-warehouseDeliverySchedule.addEvent({name: 'Sony Delivery', details: '550 units of PS5 consoles being shipped from Sony', 'tag': 'Sony'}, 4, 3)
-warehouseDeliverySchedule.addEvent({name: 'Sony Delivery', details: '550 units of PS5 consoles being shipped from Sony', 'tag': 'Sony'}, 5, 4)
-warehouseDeliverySchedule.addEvent({name: 'Sony Delivery', details: '550 units of PS5 consoles being shipped from Sony', 'tag': 'Sony'}, 6, 5)
-warehouseDeliverySchedule.addEvent({name: 'Microsoft Delivery', details: '550 units of Xbox consoles being shipped from Microsoft', 'tag': 'Microsoft'}, 4, 2)
-warehouseDeliverySchedule.addEvent({name: 'Microsoft Delivery', details: '550 units of Xbox consoles being shipped from Microsoft', 'tag': 'Microsoft'}, 5, 3)
-warehouseDeliverySchedule.addEvent({name: 'Microsoft Delivery', details: '550 units of Xbox consoles being shipped from Microsoft', 'tag': 'Microsoft'}, 6, 4)
-warehouseDeliverySchedule.addEvent({name: 'Microsoft Delivery', details: '550 units of Xbox consoles being shipped from Microsoft', 'tag': 'Microsoft'}, 7, 5)
+    const createTable = document.querySelector('#createTable')
+    createTable.addEventListener('submit', createTableFunction)
 
-// warehouseDeliverySchedule.groupTags('Nintendo', 'test')
+    function createTableFunction(e) {
 
-const inventoryAdd = document.querySelector('#inventoryAdd')
-inventoryAdd.addEventListener('submit', addNewItemToInventory)
+        e.preventDefault()
 
-const inventoryDelete = document.querySelector('#inventoryDelete')
-inventoryDelete.addEventListener('submit', deleteItemInventory)
+        document.querySelector('#exampleDiv').innerHTML = ''
 
-const inventoryModify = document.querySelector("#inventoryModify")
-inventoryModify.addEventListener('submit', modifyItemInventory)
+        const numRows = document.querySelector('#numRows').value
+        const numCols = document.querySelector('#numCols').value
 
-const scheduleAdd = document.querySelector('#scheduleAdd')
-scheduleAdd.addEventListener('submit', addNewShipment)
+        const exampleTable = new GridTable()
+        exampleTable.makeGridTable(parseInt(numRows), parseInt(numCols), 'exampleDiv', 'example', 'table')
 
-const scheduleDelete = document.querySelector('#scheduleDelete')
-scheduleDelete.addEventListener('submit', deleteShipment)
+        document.querySelector('#numRows').value = ''
+        document.querySelector('#numCols').value = ''
 
-const scheduleUpdate = document.querySelector('#scheduleUpdate')
-scheduleUpdate.addEventListener('submit', updateShipment)
 
-function addNewItemToInventory(e) {
+    }
+
+
+    const exampleTable2 = new GridTable()
+    exampleTable2.makeGridTable(4, 4, 'example2Div', 'example2', 'table')
+    exampleTable2.updateHeader(['Header 1', 'Header 2', 'Header 3', 'Header 4'])
+    const insertData = document.querySelector("#insertData")
+    insertData.addEventListener('submit', insertDataFunction)
+
+    function insertDataFunction(e) {
+
+        e.preventDefault()
+
+        const row = document.querySelector('#insertRow').value
+        const col = document.querySelector('#insertCol').value
+        const data = document.querySelector('#insertText').value
+
+        exampleTable2.insertData(parseInt(row), parseInt(col), data)
+
+    }
     
-    e.preventDefault()
+    const exampleTable3 = new GridTable()
+    exampleTable3.makeGridTable(4, 4, 'example3Div', 'example3', 'table')
+    const updateRow = document.querySelector('#updateRow')
+    updateRow.addEventListener('submit', updateRowFunction)
 
-    const itemID = document.querySelector('#itemID').value
-    const itemName = document.querySelector('#itemName').value
-    const itemQuantity = document.querySelector('#itemQuantity').value
-    const itemPrice = document.querySelector('#itemPrice').value
+    function updateRowFunction(e) {
 
-    warehouseInventory.addRow([itemID, itemName, itemQuantity, itemPrice])
+        e.preventDefault()
 
-    document.querySelector('#itemID').value = ''
-    document.querySelector('#itemName').value = ''
-    document.querySelector('#itemQuantity').value = ''
-    document.querySelector('#itemPrice').value = ''
+        const row = document.querySelector('#rowUpdate').value
+        const valueOne = document.querySelector('#columnOne').value
+        const valueTwo = document.querySelector('#columnTwo').value
+        const valueThree = document.querySelector('#columnThree').value
+        const valueFour = document.querySelector('#columnFour').value
 
-}
+        exampleTable3.updateRow(parseInt(row), [valueOne, valueTwo, valueThree, valueFour])
 
-function deleteItemInventory(e) {
+    }
 
-    e.preventDefault()
+    const exampleTable4 = new GridTable()
+    exampleTable4.makeGridTable(4, 4, 'example4Div', 'example4', 'table')
+    exampleTable4.updateHeader(['Header 1', 'Header 2', 'Header 3', 'Header 4'])
+    const updateCol = document.querySelector('#updateCol')
+    updateCol.addEventListener('submit', updateColFunction)
 
-    const itemID = document.querySelector("#deleteItemID").value
+    function updateColFunction(e) {
 
-    warehouseInventory.deleteRow(warehouseInventory.rowFinder(1, itemID))
+        e.preventDefault()
 
-    document.querySelector("#deleteItemID").value = ''
+        const col = document.querySelector('#colUpdate').value
+        const valueOne = document.querySelector('#rowOne').value
+        const valueTwo = document.querySelector('#rowTwo').value
+        const valueThree = document.querySelector('#rowThree').value
 
-}
+        exampleTable4.updateCol(parseInt(col), [valueOne, valueTwo, valueThree])
 
-function modifyItemInventory(e) {
+    }
 
-    e.preventDefault()
+    const exampleTable5 = new GridTable()
+    exampleTable5.makeGridTable(2, 3, 'example5Div', 'example5', 'table')
+    exampleTable5.updateHeader(['Header 1', 'Header 2', 'Header 3'])
+    const deleteRow = document.querySelector('#deleteRow')
+    deleteRow.addEventListener('submit', deleteRowFunction)
 
-    const itemID = document.querySelector('#modifyItemID').value
-    const itemProperty = document.querySelector("#modifyItemProperty").value
-    const itemNewValue = document.querySelector("#modifyItemNewValue").value
+    function deleteRowFunction(e) {
 
-    const colNum = warehouseInventory.colFinder(itemProperty)
+        e.preventDefault()
 
-    const rowNum = warehouseInventory.rowFinder(1, itemID)
+        const row = document.querySelector('#rowNumDelete').value
+        exampleTable5.deleteRow(parseInt(row))
 
-    warehouseInventory.insertData(rowNum, colNum, itemNewValue)
+        document.querySelector('#deleteRowSubmit').disabled = true
+    }
 
-    document.querySelector('#modifyItemID').value = ''
-    document.querySelector("#modifyItemProperty").value = ''
-    document.querySelector("#modifyItemNewValue").value = ''
+    const exampleTable6 = new GridTable()
+    exampleTable6.makeGridTable(1, 2, 'example6Div', 'example6', 'table')
+    exampleTable6.updateHeader(['Header 1', 'Header 2'])
+    const addRow = document.querySelector('#addRow')
+    addRow.addEventListener('submit', addRowFunction)
 
-}
+    function addRowFunction(e) {
 
-function addNewShipment(e) {
+        e.preventDefault()
 
-    e.preventDefault()
+        const cellOne = document.querySelector('#firstCell').value
+        const cellTwo = document.querySelector('#secondCell').value
 
-    const shipmentName = document.querySelector('#eventName').value
-    const shipmentDetails = document.querySelector('#eventDetails').value
-    const shipmentDate = document.querySelector('#eventDate').value
-    const shipmentTime = document.querySelector('#eventTime').value
+        exampleTable6.addRow([cellOne, cellTwo])
 
-    const shipmentObj = {name: shipmentName, details: shipmentDetails}
+    }
 
-    const row = warehouseDeliverySchedule.rowFinder(1, shipmentTime)
-    const col = warehouseDeliverySchedule.colFinder(shipmentDate)
+    const exampleTable7 = new GridTable()
+    exampleTable7.makeGridTable(2, 2, 'example7Div', 'example7', 'table')
+    exampleTable7.updateHeader(['Header 1', "Header 2"])
+    const addColumn = document.querySelector("#addCol")
+    addColumn.addEventListener('submit', addColumnFunction)
 
-    warehouseDeliverySchedule.addEvent(shipmentObj, row, col)
+    function addColumnFunction(e) {
 
-    document.querySelector('#eventName').value = ''
-    document.querySelector('#eventDetails').value = ''
-    document.querySelector('#eventDate').value = '' 
-    document.querySelector('#eventTime').value = ''
-}
+        e.preventDefault()
 
-function deleteShipment(e) {
+        const header = document.querySelector('#rowOneCell').value
+        const cell = document.querySelector("#rowTwoCell").value
 
-    e.preventDefault()
+        exampleTable7.addCol([header, cell])
 
-    const eventName = document.querySelector('#eventDeleteName').value
-    const eventDate = document.querySelector('#eventDeleteDate').value
-    const eventTime = document.querySelector('#eventDeleteTime').value
+    }
 
-    const row = warehouseDeliverySchedule.rowFinder(1, eventTime)
-    const col = warehouseDeliverySchedule.colFinder(eventDate)
+    const warehouseInventory = new GridTable()
+    warehouseInventory.makeGridTable(5, 4, 'example8Div', 'warehouseInventoryTable', 'table')
+    warehouseInventory.updateHeader(['Item ID', 'Item Name', 'Item Quantity', 'Item Price ($)'])
+    warehouseInventory.updateRow(2, ['001', 'PS5 Digital Edition Console', '699', '499.99'])
+    warehouseInventory.updateRow(3, ['002', 'PS5 Console', '378', '629.99'])
+    warehouseInventory.updateRow(4, ['003', 'Xbox Series X', '981', '599.99'])
+    warehouseInventory.updateRow(5, ['004', 'Xbox Series S', '467', '379.99'])
 
-    warehouseDeliverySchedule.deleteEvent(eventName, row, col)
-
-    document.querySelector('#eventDeleteName').value = ''
-    document.querySelector('#eventDeleteDate').value = ''
-    document.querySelector('#eventDeleteTime').value = ''
-}
-
-function updateShipment(e) {
-
-    e.preventDefault()
-
-    const eventName = document.querySelector('#eventUpdateName').value
-    const eventDetails = document.querySelector("#eventUpdateDetails").value
-    const eventDate = document.querySelector("#eventUpdateDate").value
-    const eventTime = document.querySelector('#eventUpdateTime').value
-
-    const updatedObj = {name: eventName, details: eventDetails}
-
-    const row = warehouseDeliverySchedule.rowFinder(1, eventTime)
-    const col = warehouseDeliverySchedule.colFinder(eventDate)
-
-    warehouseDeliverySchedule.modifyEvent(updatedObj, row, col)
-
-    document.querySelector('#eventUpdateName').value = ''
-    document.querySelector("#eventUpdateDetails").value = ''
-    document.querySelector("#eventUpdateDate").value = ''
-    document.querySelector('#eventUpdateTime').value = ''
+    
 
 }
+
+examples()
