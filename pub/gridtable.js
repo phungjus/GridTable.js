@@ -1,8 +1,5 @@
 "use strict";
 
-// const { text } = require("express");
-
-
 (function(global, document) {
     function GridTable() {
     
