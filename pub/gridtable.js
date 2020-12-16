@@ -2,11 +2,6 @@
 
 // const { text } = require("express");
 
-//Remove all case-sensitivty in the code change all keys and such to lowercase
-
-//When adding new element or adding new row or adding new col add eventListeners
-
-//Go through file to double check all places with tag: CHECK
 
 (function(global, document) {
     function GridTable() {
@@ -73,11 +68,11 @@
                     tableHead.appendChild(text)
                     this.cellData.push({'row': 1, 'col': (col+1), 'data': tableHead.innerText})
                     if (this.gridOrTable === 'table') {
-                        tableHead.addEventListener('click', (e => this.sortColumn(e, this.sortAsc)))
-                        tableHead.ondrop = (ev) => this.tableHeadDrop(ev)
-                        tableHead.ondragover = (ev) => this.allowDrop(ev)
+                        tableHead.addEventListener('click', (e => this.__sortColumn(e, this.sortAsc)))
+                        tableHead.ondrop = (ev) => this._tableHeadDrop(ev)
+                        tableHead.ondragover = (ev) => this.__allowDrop(ev)
                         tableHead.draggable = true
-                        tableHead.ondragstart = (ev) => this.drag(ev)
+                        tableHead.ondragstart = (ev) => this._drag(ev)
                     }
                     firstRow.appendChild(tableHead)
     
@@ -90,14 +85,14 @@
     
                         const tableData = document.createElement('td')
                         if (this.gridOrTable === 'grid') {
-                            tableData.ondrop = (ev) => this.gridDrop(ev)
-                            tableData.ondragover = (ev) => this.allowDrop(ev)
+                            tableData.ondrop = (ev) => this.__gridDrop(ev)
+                            tableData.ondragover = (ev) => this.__allowDrop(ev)
                         }
                         if (this.gridOrTable === 'table' && col === 0) {
-                            tableData.ondrop = (ev) => this.tableRowDrop(ev)
-                            tableData.ondragover = (ev) => this.allowDrop(ev)
+                            tableData.ondrop = (ev) => this._tableRowDrop(ev)
+                            tableData.ondragover = (ev) => this.__allowDrop(ev)
                             tableData.draggable = true
-                            tableData.ondragstart = (ev) => this.drag(ev)
+                            tableData.ondragstart = (ev) => this._drag(ev)
                         }
                         tableData.id = 'GridTable' + uniqueID + 'DataRow-' + (row+1) + '-Col-' + (col+1)
                         const text = document.createTextNode('')
@@ -112,49 +107,6 @@
                     GridTable.appendChild(this.rowData[row])
                 }
                 insert.append(GridTable)
-            },
-    
-            tableRowDrop: function(event) {
-    
-                event.preventDefault()
-                const originalID = event.dataTransfer.getData("text")
-                const newID = event.target.id
-                const originalRowNumber = parseInt(originalID.split('-')[1])
-                const newRowNumber = parseInt(newID.split('-')[1])
-                
-                if (originalRowNumber === 1) {
-                    return
-                }
-    
-                this.rowSwap(originalRowNumber, newRowNumber)
-    
-            },
-    
-            tableHeadDrop: function(event) {
-    
-                event.preventDefault()
-                const originalID = event.dataTransfer.getData("text")
-                const newID = event.target.id
-                const originalColNumber = parseInt(originalID.split('-')[3])
-                const newColNumber = parseInt(newID.split('-')[3])
-    
-                this.colSwap(originalColNumber, newColNumber)
-    
-            },
-    
-            sortColumn: function(e, sortAsc) {
-    
-                const id = e.target.id
-                const idLength = id.length
-                const colNumber = parseInt(id[idLength-1])
-    
-                if (sortAsc[colNumber-1]) {
-                    this.sortData(colNumber, 'asc')
-                    sortAsc[colNumber-1] = !sortAsc[colNumber-1]
-                } else {
-                    this.sortData(colNumber, 'desc')
-                    sortAsc[colNumber-1] = !sortAsc[colNumber-1]
-                }
             },
     
             insertData: function(rowNum, colNum, data) {
@@ -174,6 +126,8 @@
     
                 if (this.checkInitialization()) {
                     return Error("Please create a table before inserting data")
+                } else if (this.gridOrTable === 'grid') {
+                    return Error("This function is only to be used for Tables")
                 }
     
                 const cell = document.getElementById("GridTable"+this.uniqueID+"DataRow-"+rowNum+'-Col-'+colNum)
@@ -402,8 +356,7 @@
                 */
     
                 if (this.gridOrTable === 'grid') {
-                    console.log('This function can only be used on Tables not Grids ')
-                    return
+                    return Error('This function can only be used on Tables not Grids ')
                 }
     
                 const colValues = this.cellData.filter(cell => cell.col === colNum && cell.row !== 1)
@@ -564,6 +517,21 @@
     
             rowSwap: function(rowIndexOne, rowIndexTwo) {
     
+                /**
+                * @param {Number} rowIndexOne
+                * @param {Number} rowIndexTwo
+                * 
+                * Description:
+                * This function takes in two parameters rowIndexOne and rowIndexTwo. It then swaps those two rows 
+                * in the table.
+                * 
+                * Note: This function is only to be used with Tables not Grids.        
+                */
+
+                if (this.gridOrTable === 'grid') {
+                    return Error('This function is only to be used with Tables')
+                }
+
                 const table = "GridTable" + this.uniqueID
                 const rowOneID = "GridTable" + this.uniqueID + "Row-" + rowIndexOne
                 const rowTwoID = "GridTable" + this.uniqueID + "Row-" + rowIndexTwo
@@ -600,6 +568,21 @@
     
             colSwap: function(colOneIndex, colTwoIndex) {
     
+                /**
+                * @param {Number} colOneIndex
+                * @param {Number} colTwoIndex
+                * 
+                * Description:
+                * This function takes in two parameters colOneIndex and colTwoIndex. It then swaps those two columns 
+                * in the table.
+                * 
+                * Note: This function is only to be used with Tables not Grids.        
+                */
+
+                if (this.gridOrTable === 'grid') {
+                    return Error('This function is only to be used with Tables')
+                }
+
                 const colOneCells = this.cellData.filter(cell => cell.col === colOneIndex)
                 const colTwoCells = this.cellData.filter(cell => cell.col === colTwoIndex)
     
@@ -625,62 +608,6 @@
      
             },
     
-            drag: function(event) {
-    
-                event.dataTransfer.setData('text', event.target.id)
-    
-            },
-    
-            allowDrop: function(event) {
-    
-                event.preventDefault()
-    
-            },
-    
-            gridDrop: function(event) {
-    
-                //UPDATE THIS.EVENTTAGS
-
-                event.preventDefault()
-                var data = event.dataTransfer.getData("text")
-                const dataLength = data.length
-                const dataRow = parseInt(data[dataLength-5])
-                const dataCol = parseInt(data[dataLength-1])
-    
-                if (event.target.tagName === 'TD') {
-                    const targetLength = event.target.id.length
-                    const newRow = parseInt(event.target.id[targetLength-7])
-                    const newCol = parseInt(event.target.id[targetLength-1])
-                    event.target.appendChild(document.getElementById(data))
-    
-                    const oldToolTip = document.getElementById(data)
-                    const oldCellInfo = this.cellData.filter(cell => cell.row === dataRow && cell.col === dataCol)[0]
-                    oldCellInfo.data = oldCellInfo.data.replace(oldToolTip.outerHTML, "")
-    
-                    oldToolTip.id = oldToolTip.id.slice(0, oldToolTip.id.length-8) + "Row" + newRow + "Col" + newCol
-    
-                    const newCellInfo = this.cellData.filter(cell => cell.row === newRow && cell.col === newCol)[0]
-                    newCellInfo.data += oldToolTip.outerHTML
-    
-                } else {
-                    const targetLength = event.target.parentNode.id.length
-                    const newRow = parseInt(event.target.parentNode.id[targetLength-7])
-                    const newCol = parseInt(event.target.parentNode.id[targetLength-1])
-                    event.target.parentNode.appendChild(document.getElementById(data))
-    
-                    const oldToolTip = document.getElementById(data)
-    
-                    const oldCellInfo = this.cellData.filter(cell => cell.row === dataRow && cell.col === dataCol)[0]
-                    oldCellInfo.data = oldCellInfo.data.replace(oldToolTip.outerHTML, "")
-    
-                    oldToolTip.id = oldToolTip.id.slice(0, oldToolTip.id.length-8) + "Row" + newRow + "Col" + newCol
-    
-                    const newCellInfo = this.cellData.filter(cell => cell.row === newRow && cell.col === newCol)[0]
-                    newCellInfo.data += oldToolTip.outerHTML
-                }
-    
-            },
-    
             addEvent: function(eventObj, cellRow, cellCol) {
                 
                 /**
@@ -699,8 +626,8 @@
     
                 if (eventObj.tag !== undefined) {
                     const cellDataClone = Array.from(this.cellData)
-                    eventObj.rowInfo = cellDataClone.filter(cell => cell.col === 1 && cell.row === cellRow)[0].data
-                    eventObj.colInfo = cellDataClone.filter(cell => cell.col === cellCol && cell.row === 1)[0].data
+                    eventObj.rowInfo = cellRow
+                    eventObj.colInfo = cellCol
                     if (eventObj.tag in this.eventTag) {
                         this.eventTag[eventObj.tag].push(eventObj)
                     } else {
@@ -712,18 +639,17 @@
     
                 const tooltipDiv = document.createElement('div')
                 tooltipDiv.draggable = true
-                tooltipDiv.ondragstart = (ev) => this.drag(ev)
+                tooltipDiv.ondragstart = (ev) => this._drag(ev)
                 tooltipDiv.className = 'tooltip'
                 tooltipDiv.innerText = eventObj.name
                 tooltipDiv.id = ('tooltipDiv'+eventObj.name+'Row'+cellRow+'Col'+cellCol).toLowerCase()
-                tooltipDiv.onclick = (ev) => this.display(ev)
-                //MAKE IT SO THE USER MUST CLICK THE DIV INORDER FOR THE TOOLTIP TO DISPLAY
+                tooltipDiv.onclick = (ev) => this._display(ev)
     
                 const tooltipText = document.createElement('span')
                 tooltipText.className = 'tooltiptext'
-                tooltipText.innerText = eventObj.details
+                tooltipText.innerText = 'Details:\n' + eventObj.details + '\n' + 'Tag:\n' + (eventObj.tag ? eventObj.tag : 'None')
                 tooltipText.style.display = 'none' 
-    
+
                 tooltipDiv.appendChild(tooltipText)
     
                 cell.appendChild(tooltipDiv)
@@ -731,18 +657,7 @@
                 this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data = cell.innerHTML
             },
     
-            display: function(event) {
-    
-                const docElement = event.target.childNodes[1]
-                if (docElement.style.display === 'none') {
-                    docElement.style.display = 'block'
-                } else {
-                    docElement.style.display = 'none'
-                }
-    
-            },
-    
-            deleteEvent: function(eventName, cellRow, cellCol) {
+            deleteEvent: function(eventName, eventTag, cellRow, cellCol) {
     
                 /**
                 * @param {String} eventName
@@ -759,12 +674,15 @@
                     return
                 }
     
+                if (eventTag !== "None") {
+                    this.eventTag[eventTag] = this.eventTag[eventTag].filter(event => event.colInfo !== cellCol && event.rowInfo !== cellRow && event.name !== eventName)
+                }
+
                 const cell = document.getElementById("GridTable"+this.uniqueID+"DataRow-"+cellRow+'-Col-'+cellCol)
                 const event = document.getElementById("tooltipdiv"+ eventName.toLowerCase() + "row" + cellRow + "col" + cellCol)
                 cell.removeChild(event)
     
                 this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data = this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data.replace(event.outerHTML, "")
-    
     
             },
     
@@ -785,8 +703,8 @@
     
                 if (updatedEventObj.tag !== undefined) {
                     const cellDataClone = Array.from(this.cellData)
-                    updatedEventObj.rowInfo = cellDataClone.filter(cell => cell.col === 1 && cell.row === cellRow)[0].data
-                    updatedEventObj.colInfo = cellDataClone.filter(cell => cell.col === cellCol && cell.row === 1)[0].data
+                    updatedEventObj.rowInfo = cellRow
+                    updatedEventObj.colInfo = cellCol
                     if (updatedEventObj.tag in this.eventTag) {
                         this.eventTag[updatedEventObj.tag].push(updatedEventObj)
                     } else {
@@ -802,14 +720,14 @@
             
                 const tooltipDiv = document.createElement('div')
                 tooltipDiv.draggable = true
-                tooltipDiv.ondragstart = (ev) => this.drag(ev)
+                tooltipDiv.ondragstart = (ev) => this._drag(ev)
                 tooltipDiv.className = 'tooltip'
                 tooltipDiv.innerText = updatedEventObj.name
                 tooltipDiv.id = ('tooltipDiv'+updatedEventObj.name+'Row'+cellRow+'Col'+cellCol).toLowerCase()
     
                 const tooltipText = document.createElement('span')
                 tooltipText.className = 'tooltiptext'
-                tooltipText.innerText = updatedEventObj.details
+                tooltipText.innerText = 'Details:\n' + eventObj.details + '\n' + 'Tag:\n' + (eventObj.tag ? eventObj.tag : 'None')
     
                 tooltipDiv.appendChild(tooltipText)
     
@@ -896,6 +814,20 @@
     
             filter: function(queryVariable, queryOperator, queryComparison, insertID) {
     
+                /**
+                * @param {String} queryVariable
+                * @param {String} queryOperator
+                * @param {String} queryComparison
+                * @param {String} insertID 
+                * 
+                * Description:
+                * This functions takes in 4 parameters queryVariable, queryOperator, queryComparison, and insertID. 
+                * It then filters the data according to the three query variables, and inserts a new table with the filtered data in the HTML element with id: insertID  
+                * Note: there are only 6 valid queryOperators: ==, !=, &lt;, &gt;, &lt;=, &gt;= 
+                * Note: queryVariable can only be the names of the header cell of each column. 
+                * Note: This function can only be used with Tables not Grids. 
+                */
+
                 if (! (this.queryOperators.includes(queryOperator))) {
                     console.log("not a valid operator")
                     return
@@ -1110,6 +1042,16 @@
     
             groupTags: function(tag, insertValue) {
 
+                /**
+                * @param {String} tag
+                * @param {String} insertValue
+                * 
+                * Description:
+                * This function creates a new table that shows all the events that have the tagName associated with them.
+                * Note: that the valid tagNames are case-sensitive along with the tag: 'all' which shows all events.
+                * Note: this function can only be used with Grids not Tables
+                */
+
                 if (this.gridOrTable === 'table') {
                     console.log("This function is only for Grids")
                     return
@@ -1150,11 +1092,11 @@
                                 const tagRowCol = document.createElement('div')
                                 tagName.innerHTML = "<b><u>Event Name:</u> </b>" + tagObjects[k][j].name
                                 tagDetails.innerHTML = "<b><u>Event Details:</u> </b>" + tagObjects[k][j].details
-                                tagRowCol.innerHTML = "<b><u>Event Occurence:</u> </b>" + tagObjects[k][j].colInfo + " " + tagObjects[k][j].rowInfo
+                                // tagRowCol.innerHTML = "<b><u>Event Occurence:</u> </b>" + tagObjects[k][j].colInfo + " " + tagObjects[k][j].rowInfo
     
                                 tagTableData.appendChild(tagName)
                                 tagTableData.appendChild(tagDetails)
-                                tagTableData.appendChild(tagRowCol)
+                                // tagTableData.appendChild(tagRowCol)
     
                             } 
     
@@ -1189,11 +1131,11 @@
                         const tagRowCol = document.createElement('div')
                         tagName.innerHTML = "<b><u>Event Name:</u> </b>" + tagArray[i].name
                         tagDetails.innerHTML = "<b><u>Event Details:</u> </b>" + tagArray[i].details
-                        tagRowCol.innerHTML = "<b><u>Event Occurence:</u> </b>" + tagArray[i].colInfo + " " + tagArray[i].rowInfo
+                        // tagRowCol.innerHTML = "<b><u>Event Occurence:</u> </b>" + tagArray[i].colInfo + " " + tagArray[i].rowInfo
     
                         tagTableData.appendChild(tagName)
                         tagTableData.appendChild(tagDetails)
-                        tagTableData.appendChild(tagRowCol)
+                        // tagTableData.appendChild(tagRowCol)
     
                         tagTableDataRow.appendChild(tagTableData)
                         tagTable.appendChild(tagTableDataRow)
@@ -1207,7 +1149,117 @@
                     return
                 }
     
-            }
+            },
+
+            _tableRowDrop: function(event) {
+    
+                event.preventDefault()
+                const originalID = event.dataTransfer.getData("text")
+                const newID = event.target.id
+                const originalRowNumber = parseInt(originalID.split('-')[1])
+                const newRowNumber = parseInt(newID.split('-')[1])
+                
+                if (originalRowNumber === 1) {
+                    return
+                }
+    
+                this.rowSwap(originalRowNumber, newRowNumber)
+    
+            },
+    
+            _tableHeadDrop: function(event) {
+    
+                event.preventDefault()
+                const originalID = event.dataTransfer.getData("text")
+                const newID = event.target.id
+                const originalColNumber = parseInt(originalID.split('-')[3])
+                const newColNumber = parseInt(newID.split('-')[3])
+    
+                this.colSwap(originalColNumber, newColNumber)
+    
+            },
+    
+            __sortColumn: function(e, sortAsc) {
+    
+                const id = e.target.id
+                const idLength = id.length
+                const colNumber = parseInt(id[idLength-1])
+    
+                if (sortAsc[colNumber-1]) {
+                    this.sortData(colNumber, 'asc')
+                    sortAsc[colNumber-1] = !sortAsc[colNumber-1]
+                } else {
+                    this.sortData(colNumber, 'desc')
+                    sortAsc[colNumber-1] = !sortAsc[colNumber-1]
+                }
+            },
+
+            _drag: function(event) {
+    
+                event.dataTransfer.setData('text', event.target.id)
+    
+            },
+    
+            __allowDrop: function(event) {
+    
+                event.preventDefault()
+    
+            },
+    
+            __gridDrop: function(event) {
+    
+                event.preventDefault()
+                var data = event.dataTransfer.getData("text")
+                const dataLength = data.length
+                const dataRow = parseInt(data[dataLength-5])
+                const dataCol = parseInt(data[dataLength-1])
+    
+                if (event.target.tagName === 'TD') {
+                    const targetLength = event.target.id.length
+                    const newRow = parseInt(event.target.id[targetLength-7])
+                    const newCol = parseInt(event.target.id[targetLength-1])
+                    event.target.appendChild(document.getElementById(data))
+    
+                    const oldToolTip = document.getElementById(data)
+                    const oldCellInfo = this.cellData.filter(cell => cell.row === dataRow && cell.col === dataCol)[0]
+                    oldCellInfo.data = oldCellInfo.data.replace(oldToolTip.outerHTML, "")
+    
+                    oldToolTip.id = oldToolTip.id.slice(0, oldToolTip.id.length-8) + "Row" + newRow + "Col" + newCol
+    
+                    const newCellInfo = this.cellData.filter(cell => cell.row === newRow && cell.col === newCol)[0]
+                    newCellInfo.data += oldToolTip.outerHTML
+    
+                } else {
+                    const targetLength = event.target.parentNode.id.length
+                    const newRow = parseInt(event.target.parentNode.id[targetLength-7])
+                    const newCol = parseInt(event.target.parentNode.id[targetLength-1])
+                    event.target.parentNode.appendChild(document.getElementById(data))
+    
+                    const oldToolTip = document.getElementById(data)
+    
+                    const oldCellInfo = this.cellData.filter(cell => cell.row === dataRow && cell.col === dataCol)[0]
+                    oldCellInfo.data = oldCellInfo.data.replace(oldToolTip.outerHTML, "")
+    
+                    oldToolTip.id = oldToolTip.id.slice(0, oldToolTip.id.length-8) + "Row" + newRow + "Col" + newCol
+    
+                    const newCellInfo = this.cellData.filter(cell => cell.row === newRow && cell.col === newCol)[0]
+                    newCellInfo.data += oldToolTip.outerHTML
+                }
+
+                console.log(this.cellData)
+    
+            },
+            
+            _display: function(event) {
+                
+                const docElement = event.target.childNodes[1]
+                if (docElement.style.display === 'none') {
+                    docElement.style.display = 'block'
+                } else {
+                    docElement.style.display = 'none'
+                }
+    
+            },
     
         }
 

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Grid Table: Documentation</title>
+    
+    <link href="documentation.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <div id="root">
+        <img src="./GridTable.js.svg" alt="GridTable.js" class="center">
+        <div id="documentation">
+            <h2>Getting Started:</h2>
+            <p>To begin using GridTable.js you need to place the following scripts inside your HTML document as follows:</p>
+            <code class="language-js">
+                &lt;head&gt;
+            </code>
+            <code class="language-js">
+                <blockquote>&lt;script defer type="text/javascript" src='gridtable.js'&gt;&lt;/script&gt;</blockquote>
+            </code>
+            <code class="language-js">
+                <blockquote>&lt;link href="stylesheet.css" rel="stylesheet" type="text/css"&gt;</blockquote>
+            </code>
+            <code class="language-js">
+                &lt;/head&gt;
+            </code>
+            <p>Then inside the body tag of your HTML Code you must have a &lt;div&gt; tag with a unique ID for each new GridTable you create as follows:</p>
+            <code class="language-js">
+                &lt;body&gt;
+            </code>
+            <code class="language-js">
+                <blockquote>&lt;div id='uniqueID'&gt;&lt;/div&gt;</blockquote>
+            </code>
+            <code class="language-js">
+                &lt;/body&gt;
+            </code>
+            <p>After completing the two steps above you are ready to start using the GridTable.js library, it is now simply just instantiating the GridTable object in your Javascript file as follows:</p>
+            <code class="language-js">
+                const newGridTable = new GridTable()
+            </code>
+
+            <h2>Constructors</h2>
+            <h3>newGridTable.makeGridTable(numRows, numCols, selector, uniqueID, gridOrTable)</h3>
+            <p>This function takes in 5 parameters: numRows, numCols, selector, uniqueID, and gridOrTable. It then creates an HTML table with 'numRows' rows and 'numCols' columns and id: 'GridTable' + uniqueID, then adds that table to the HTML element with id: 'selector'. Then depending on whether a grid or table was selected different functions can be called.</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">
+                newGridTable.makeGridTable(5, 5, "uniqueID", 'newTable', 'table') //This creates a table with ID: newTable that has 5 rows and 5 columns
+            </code>
+            <code class="language-js">
+                newGridTable.makeGridTable(5, 5, "uniqueID", 'newGrid', 'grid') //This creates a grid with ID: newTable that has 5 rows and 5 columns
+            </code>
+
+            <h3>newGridTable.insertData(rowNum, colNum, data)</h3>
+            <p>This function takes in three parameters called cellRow, cellCol, data. The function inserts the new data into the cell located at row: cellRow and column: cellCol. This function can only be used with Tables not Grids</p> 
+            <p>Note: this function will throw an error if the GridTable hasn't been initialized (i.e. no columns or no rows created) or if the GridTable object is a Grid as this function is only used for Tables</p>
+
+            <p><u>Example Code:</u></p>
+            <code class="language-js">
+                newGridTable.insertData(2, 2, 'Testing') //This inserts 'Testing' into the cell at row 2 column 2
+            </code>
+
+            <h3>newGridTable.checkInitialization()</h3>
+            <p>This function returns whether or not a GridTable object has been created</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.checkInitialization()</code>
+
+            <h3>newGridTable.rowFinder(colNum, cellData)</h3>
+            <p>This function returns the row the cellData is located in based on the column number input: colNum</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.rowFinder(2, 'Testing')</code>
+
+            <h3>newGridTable.colFinder(colHeader)</h3>
+            <p>This function returns the column number given the name of the column header provided by the input colHeader</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.colFinder('Header 1')</code>
+            
+            <h3>newGridTable.updateRow(rowNum, updatedList)</h3>
+            <p>This function takes in two parameters rowNum and updatedList. It then updates all the data in the row with the values inside the Array updatedlist. </p>
+            <p>Note: this function will throw an error if the length of updatedList doesn't match up to the number of columns inside the GridTable.</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.updateRow(1, ['Name', 'Quantity'])</code>
+
+            <h3>newGridTable.updateCol(colNum, updatedList)</h3>
+            <p>This function takes in two parameters colNum and updatedList. It then updates all the data in the column with the values inside the Array updatedlist.</p>
+            <p>Note: this function will throw an error if the length of updatedList doesn't match up to the number of rows inside the GridTable.</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.updateCol(1, ['Item ID', '001', '002'])</code>
+
+            <h3>newGridTable.updateHeader(listOfNewHeaders)</h3>
+            <p></p>This function takes in a parameter listOfNewHeaders. It then updates the header of the GridTable with the data inside the Array listOfNewHeaders.</p>
+            <p>Note: this function will throw an error if the length of updatedList doesn't match up to the number of columns inside the GridTable.</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.updateHeader(['Name', 'Quantity'])</code>
+
+            <h3>newGridTable.deleteRow(rowNum)</h3>
+            <p>This function takes in a parameter rowNum. It then deletes the specified row from the GridTable. You also cannot delete the row of header cells.</p>
+            <p>Note: this function throws an error if the rowNum to be deleted is the header, or isn't a valid row number in the GridTable</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.deleteRow(2)</code>
+
+            <h3>newGridTable.deleteCol(colNum)</h3>
+            <p>This function takes in a parameter colNum. It then deletes the specified column from the GridTable.</p>
+            <p>Note: this function throws an error if the column to be deleted isn't a valid number (i.e. colNum is negative or colNum isn't in the GridTable object)</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.deleteCol(1)</code>
+
+            <h3>newGridTable.sortData(colNum, direction)</h3>
+            <p>This function takes in two parameters colNum and direction. It then sorts the specified column in accordance to the direction specified which can either be: 'asc' for ascending order or 'desc' for descending order.</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.sortData(2, 'asc')</code>
+
+            <h3>newGridTable.addRow(rowData)</h3>
+            <p>This function takes in a parameter rowData. It then adds a row to the GridTable where each entry is taken from the rowData Array.</p>
+            <p>Note: this function throws an error if the length of rowData is not equal to the number of columns in the GridTable object.</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.addRow(['NewValue1', 'NewValue2'])</code>
+
+            <h3>newGridTable.addCol(colData)</h3>
+            <p>This function takes in a parameter colData. It then adds a column to the GridTable where each entry is taken from the colData Array.</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.addCol(['Cell1', 'Cell2', 'Cell3'])</code>
+
+            <h3>newGridTable.rowSwap(rowIndexOne, rowIndexTwo)</h3>
+            <p>This function takes in two parameters rowIndexOne and rowIndexTwo. It then swaps those two rows in the table.</p>
+            <p>Note: This function is only to be used with Tables not Grids.</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.rowSwap(1, 2)</code>
+
+            <h3>newGridTable.colSwap(colOneIndex, colTwoIndex)</h3>
+            <p>This function takes in two parameters colOneIndex and colTwoIndex. It then swaps those two columns in the table.</p>
+            <p>Note: This function is only to be used with Tables not Grids.</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.colSwap(1, 2)</code>
+
+            <h3>newGridTable.filter(queryVariable, queryOperator, queryComparison, insertID)</h3>
+            <p>This functions takes in 4 parameters queryVariable, queryOperator, queryComparison, and insertID. It then filters the data according to the three query variables, and inserts a new table with the filtered data in the HTML element with id: insertID </p>
+            <p>Note: there are only 6 valid queryOperators: ==, !=, &lt;, &gt;, &lt;=, &gt;=</p>
+            <p>Note: queryVariable can only be the names of the header cell of each column.</p>
+            <p>Note: This function can only be used with Tables not Grids.</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.filter('Item Price', '&lt;=', '500', 'filterResult')</code>
+
+            <h3>newGridTable.addEvent(eventObj, cellRow, cellCol)</h3>
+            <p>This function takes in three parameters eventObj, cellRow, and cellCol. This function can only be called with the Grid form of GridTable object, it adds the eventObj to the specified cellRow and cellCol.</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.addEvent({name: 'EventName', details: 'EventDetails', tag: 'EventTag'}, 2, 1)</code>
+
+            <h3>newGridTable.deleteEvent(eventName, eventTag, cellRow, cellCol)</h3>
+            <p>This function takes in two integers called cellRow and cellCol and two strings called eventName and eventTag, it then deletes the event located at that position based on eventName.</p>
+            <p>Note: the parameter eventTag is case-sensitive. It can be: 'None' if there isn't a event tag associated to the event.</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.delete('EventName', 2, 1)</code>
+
+            <h3>newGridTable.modifyEvent(updatedEventObj, cellRow, cellCol)</h3>
+            <p>This function takes in an object called updatedEventObj, it must contain the keys: name and details. It will then update the event at the specified row and column. This function can only be used with Tables</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.modifyEvent({name: 'UpdatedEventName', details: 'UpdatedEventDetails', tag: 'UpdatedEventTag'}, 2, 1)</code>
+
+            <h3>newGridTable.groupTags(tagName, insertValue)</h3>
+            <p>This function creates a new table that shows all the events that have the tagName associated with them.</p>
+            <p>Note: that the valid tagNames are case-sensitive along with the tag: 'all' which shows all events.</p>
+            <p>Note: this function can only be used with Grids not Tables</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.groupTags('all', 'displayResults')</code>
+
+            <h3>newGridTable.exportGridTable()</h3>
+            <p>This function takes no inputs, it will return a Object which represents the GridTableJS object.</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">newGridTable.exportGridTable()</code>
+
+            <h3>newGridTable.importGridTable(gridTableObject)</h3>
+            <p>This function takes in an object called GridTableObject, it is an object which has been exported by the GridTableJS library to specifically re-create the previously saved GridTable.</p>
+            <p><u>Example Code:</u></p>
+            <code class="language-js">const exported = newGridTable.exportGridTable()</code>
+            <code class="language-js">newGridTable.importGridTable(exported)</code>
+        </div>
+    </div>
+</body>
