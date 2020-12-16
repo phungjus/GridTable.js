@@ -2,7 +2,6 @@
 
 // const { text } = require("express");
 
-//Take examples from examples.html add eventListeners to each thing or not??
 //Remove all case-sensitivty in the code change all keys and such to lowercase
 
 //When adding new element or adding new row or adding new col add eventListeners
@@ -640,6 +639,8 @@
     
             gridDrop: function(event) {
     
+                //UPDATE THIS.EVENTTAGS
+
                 event.preventDefault()
                 var data = event.dataTransfer.getData("text")
                 const dataLength = data.length
@@ -1108,7 +1109,7 @@
             },
     
             groupTags: function(tag, insertValue) {
-    
+
                 if (this.gridOrTable === 'table') {
                     console.log("This function is only for Grids")
                     return
