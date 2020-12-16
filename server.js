@@ -10,19 +10,19 @@ app.use(express.static(path.join(__dirname, '/pub')))
 
 app.get('/', (req, res) => {
 
-	res.send(path.join(__dirname) + '/pub/landingpage.html')
+	res.sendFile(path.join(__dirname) + '/pub/landingpage.html')
 
 })
 
 app.get('/examples', (req, res) => {
 
-	res.send(path.join(__dirname) + '/pub/examples.html')
+	res.sendFile(path.join(__dirname) + '/pub/examples.html')
 
 })
 
 app.get('/documentation', (req, res) => {
 
-	res.send(path.join(__dirname) + '/pub/documentation.html')
+	res.sendFile(path.join(__dirname) + '/pub/documentation.html')
 
 })
 
