@@ -1,5 +1,6 @@
 "use strict";
 
+
 (function(global, document) {
     function GridTable() {
     
@@ -651,6 +652,8 @@
     
                 cell.appendChild(tooltipDiv)
     
+                console.log(cell)
+
                 this.cellData.filter(cell => cell.row === cellRow && cell.col === cellCol)[0].data = cell.innerHTML
             },
     
