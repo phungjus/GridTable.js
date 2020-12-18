@@ -1,13 +1,21 @@
+#root {
+    background-color: #c5d5c5;
+    padding-bottom: 50px;
+}
+
+#displayTag {
+    margin-top: 20px;
+}
+
 .center {
     display: block;
     margin-left: auto;
     margin-right: auto;
-    width: 40%;
-    height: 100px;
+    width: 50%;
+    height: 150px;
 }
 
 #examples {
-    /* border: 1px green solid; */
     width: 80%;
     margin-top: 20px;
     margin-left: 10%;
@@ -20,4 +28,17 @@
 
 .example {
     margin-top: 20px
+}
+
+.link {
+    background-color: #9fa9a3;
+    color: black;
+    padding: 14px 25px;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.link:hover {
+    background-color: #f0f0f0;
 }

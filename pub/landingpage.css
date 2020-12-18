@@ -1,3 +1,7 @@
+html {
+    background-color: #c5d5c5;
+}
+
 .center {
     display: block;
     margin-left: auto;
@@ -11,18 +15,22 @@
 }
 
 #text {
-    margin-top: 50px;
+    margin-top: 0px;
     width: auto;
+    text-align: center;
 }
 
 .link {
-    background-color: black;
-    color: white;
+    background-color: #9fa9a3;
+    color: black;
     padding: 14px 25px;
     text-align: center;
     display: inline-block;
+    text-decoration: none;
+    margin-right: 40px;
+    margin-top: 20px;
 }
 
 .link:hover {
-    background-color: grey;
+    background-color: #f0f0f0;
 }
